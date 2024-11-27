@@ -1,0 +1,5 @@
+portfolios:
+  - name: example
+    description: |
+      Portfolio for example products.
+    provider_name: platform
