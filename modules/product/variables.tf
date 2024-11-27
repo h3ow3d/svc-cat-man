@@ -2,11 +2,15 @@ variable "name" {
   type = string
 }
 
-variable "description" {
+variable "owner" {
   type = string
 }
 
-variable "provider_name" {
+variable "type" {
+  type = string
+}
+
+variable "product_version" {
   type = string
 }
 
@@ -18,11 +22,10 @@ variable "template_storage_bucket_domain_name" {
   type = string
 }
 
-variable "products" {
-  type = list(object({
-    name    = string
-    owner   = string
-    type    = string
-    version = string
-  }))
+variable "portfolio_id" {
+  type = string
+}
+
+variable "portfolio_name" {
+  type = string
 }

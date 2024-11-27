@@ -7,4 +7,4 @@ portfolios:
       - name: example-bucket
         owner: platform
         type: CLOUD_FORMATION_TEMPLATE
-        version: 0
+        version: "0"
