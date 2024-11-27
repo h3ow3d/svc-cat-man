@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation template to create an S3 bucket.
+
+Resources:
+  MyS3Bucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: "my-example-bucket-name"
+      AccessControl: "Private"
+      VersioningConfiguration:
+        Status: "Enabled"
+      Tags:
+        - Key: "Environment"
+          Value: "Production"
+
+Outputs:
+  BucketName:
+    Description: "The name of the created S3 bucket"
+    Value: !Ref MyS3Bucket
+  BucketArn:
+    Description: "The ARN of the created S3 bucket"
+    Value: !GetAtt MyS3Bucket.Arn

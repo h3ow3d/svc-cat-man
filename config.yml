@@ -1,5 +1,10 @@
 portfolios:
-  - name: example
+  - name: examples
     description: |
       Portfolio for example products.
-    provider_name: platform
+    provider_name: tech_org
+    products:
+      - name: example-bucket
+        owner: platform
+        type: CLOUD_FORMATION_TEMPLATE
+        version: 0
