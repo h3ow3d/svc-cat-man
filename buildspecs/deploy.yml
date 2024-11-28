@@ -6,29 +6,34 @@ phases:
       python: 3.8
     commands:
       - echo "Installing dependencies..."
-      - yum install -y unzip
+      - apt-get update && apt-get install -y unzip curl
       - curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
       - echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
-      - yum install -y terraform
+      - apt-get update && apt-get install -y terraform
 
   pre_build:
     commands:
-      - echo "Environment: $environment"
-      - mkdir -p /tmp/deploy
-      - cd /tmp/deploy
-      - unzip /codepipeline/input/SourceArtifact/artifact.zip -d .
+      - echo "Preparing deployment for environment: $environment"
+      - echo "Unzipping source artifact..."
+      - mkdir -p /tmp/source
+      - unzip -o artifact.zip -d /tmp/source
 
   build:
     commands:
-      - if [[ "$environment" == "development" ]]; then
-          echo "Deploying to Development Environment...";
-        else
-          echo "Deploying to Production Environment...";
-        fi
+      - echo "Starting deployment for environment: $environment"
+      - cd /tmp/source
+      - echo "Initializing Terraform..."
       - terraform init
+      - echo "Validating Terraform..."
       - terraform validate
-      - terraform apply -auto-approve
+      - echo "Applying Terraform..."
+      - terraform apply -auto-approve -var="environment=$environment"
 
   post_build:
     commands:
       - echo "Deployment completed for environment: $environment"
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: no

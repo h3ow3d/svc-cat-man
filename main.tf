@@ -22,11 +22,10 @@ data "aws_caller_identity" "current" {}
 resource "random_string" "suffix" {
   length  = 6
   special = false
-  lower   = true
 }
 
 resource "aws_s3_bucket" "template_storage" {
-  bucket        = "my-yaml-bucket-${random_string.suffix.result}"
+  bucket        = lower("${var.environment}-my-yaml-bucket-${random_string.suffix.result}")
   force_destroy = true
 
   tags = {
@@ -39,6 +38,7 @@ module "portfolios" {
   for_each = { for portfolio in local.portfolios : portfolio.name => portfolio }
 
   source        = "./modules/portfolio"
+  environment   = var.environment
   name          = each.value.name
   description   = each.value.description
   provider_name = each.value.provider_name
@@ -53,6 +53,7 @@ module "products" {
   for_each = { for product in local.products : product.name => product }
 
   source                              = "./modules/product"
+  environment                         = var.environment
   name                                = each.value.name
   owner                               = each.value.owner
   type                                = each.value.type

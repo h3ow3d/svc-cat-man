@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: CloudFormation template for S3 buckets and CodePipeline sourcing from the buckets.
+Description: CloudFormation template for S3 buckets and CodePipeline with separate CodeBuild projects for development and production.
 
 Parameters:
   ArtifactStorageBucketName:
@@ -72,11 +72,6 @@ Resources:
                 Resource:
                   - !Sub arn:aws:s3:::${ArtifactStorageBucketName}
                   - !Sub arn:aws:s3:::${ArtifactStorageBucketName}/*
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                  - s3:ListBucket
-                Resource:
                   - !Sub arn:aws:s3:::${BuildSpecStorageBucketName}
                   - !Sub arn:aws:s3:::${BuildSpecStorageBucketName}/*
               - Effect: Allow
@@ -86,11 +81,11 @@ Resources:
                   - logs:PutLogEvents
                 Resource: "*"
 
-  # CodeBuild Project
-  DeployTask:
+  # CodeBuild Projects
+  DeployDevelopmentCodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: deploy
+      Name: deploy-development
       Source:
         Type: CODEPIPELINE
       Artifacts:
@@ -101,7 +96,24 @@ Resources:
         Type: LINUX_CONTAINER
         EnvironmentVariables:
           - Name: environment
-            Value: "default" # Default value, overridden in CodePipeline stages
+            Value: "development"
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+
+  DeployProductionCodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: deploy-production
+      Source:
+        Type: CODEPIPELINE
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:5.0
+        Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Name: environment
+            Value: "production"
       ServiceRole: !GetAtt CodeBuildRole.Arn
 
   # CodePipeline
@@ -152,10 +164,7 @@ Resources:
               OutputArtifacts:
                 - Name: DevelopmentOutput
               Configuration:
-                ProjectName: !Ref DeployTask
-                EnvironmentVariablesOverride:
-                  - Name: environment
-                    Value: "development"
+                ProjectName: !Ref DeployDevelopmentCodeBuildProject
         - Name: DeployToProduction
           Actions:
             - Name: DeployProduction
@@ -170,10 +179,7 @@ Resources:
               OutputArtifacts:
                 - Name: ProductionOutput
               Configuration:
-                ProjectName: !Ref DeployTask
-                EnvironmentVariablesOverride:
-                  - Name: environment
-                    Value: "production"
+                ProjectName: !Ref DeployProductionCodeBuildProject
 
 Outputs:
   ArtifactStorageBucketName:

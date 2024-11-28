@@ -4,7 +4,7 @@ locals {
 }
 
 resource "aws_servicecatalog_product" "product" {
-  name  = var.name
+  name  = "${var.environment}-${var.name}"
   owner = var.owner
   type  = var.type
 

@@ -1,22 +1,195 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: CloudFormation template to create an S3 bucket.
+Description: CloudFormation template for S3 buckets and CodePipeline with separate CodeBuild projects for development and production.
+
+Parameters:
+  ArtifactStorageBucketName:
+    Type: String
+    Description: Name of the S3 bucket for storing repo artifacts.
+
+  BuildSpecStorageBucketName:
+    Type: String
+    Description: Name of the S3 bucket for storing CodeBuild buildspec files.
 
 Resources:
-  MyS3Bucket:
-    Type: "AWS::S3::Bucket"
+  # S3 Bucket for Artifact Storage
+  ArtifactStorageBucket:
+    Type: AWS::S3::Bucket
     Properties:
-      BucketName: "my-example-bucket-name"
-      AccessControl: "Private"
+      BucketName: !Ref ArtifactStorageBucketName
       VersioningConfiguration:
-        Status: "Enabled"
-      Tags:
-        - Key: "Environment"
-          Value: "Production"
+        Status: Enabled
+
+  # S3 Bucket for BuildSpec Storage
+  BuildSpecStorageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BuildSpecStorageBucketName
+      VersioningConfiguration:
+        Status: Enabled
+
+  # IAM Role for CodePipeline
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodePipelinePermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource:
+                  - "*"
+
+  # IAM Role for CodeBuild
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodeBuildPermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub arn:aws:s3:::${ArtifactStorageBucketName}
+                  - !Sub arn:aws:s3:::${ArtifactStorageBucketName}/*
+                  - !Sub arn:aws:s3:::${BuildSpecStorageBucketName}
+                  - !Sub arn:aws:s3:::${BuildSpecStorageBucketName}/*
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  # CodeBuild Projects
+  DeployDevelopmentCodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: deploy-development
+      Source:
+        Type: CODEPIPELINE
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:5.0
+        Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Name: environment
+            Value: "development"
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+
+  DeployProductionCodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: deploy-production
+      Source:
+        Type: CODEPIPELINE
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:5.0
+        Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Name: environment
+            Value: "production"
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+
+  # CodePipeline
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: DeployPipeline
+      RoleArn: !GetAtt CodePipelineRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref ArtifactStorageBucketName
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: ArtifactSource
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              OutputArtifacts:
+                - Name: SourceArtifact
+              Configuration:
+                S3Bucket: !Ref ArtifactStorageBucketName
+                S3ObjectKey: "artifact.zip"
+            - Name: BuildSpecSource
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              OutputArtifacts:
+                - Name: BuildSpecArtifact
+              Configuration:
+                S3Bucket: !Ref BuildSpecStorageBucketName
+                S3ObjectKey: "buildspecs/deploy.yml"
+        - Name: DeployToDevelopment
+          Actions:
+            - Name: DeployDevelopment
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              InputArtifacts:
+                - Name: SourceArtifact
+                - Name: BuildSpecArtifact
+              OutputArtifacts:
+                - Name: DevelopmentOutput
+              Configuration:
+                ProjectName: !Ref DeployDevelopmentCodeBuildProject
+        - Name: DeployToProduction
+          Actions:
+            - Name: DeployProduction
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              InputArtifacts:
+                - Name: SourceArtifact
+                - Name: BuildSpecArtifact
+              OutputArtifacts:
+                - Name: ProductionOutput
+              Configuration:
+                ProjectName: !Ref DeployProductionCodeBuildProject
 
 Outputs:
-  BucketName:
-    Description: "The name of the created S3 bucket"
-    Value: !Ref MyS3Bucket
-  BucketArn:
-    Description: "The ARN of the created S3 bucket"
-    Value: !GetAtt MyS3Bucket.Arn
+  ArtifactStorageBucketName:
+    Description: The name of the S3 bucket for storing artifacts.
+    Value: !Ref ArtifactStorageBucket
+
+  BuildSpecStorageBucketName:
+    Description: The name of the S3 bucket for storing buildspecs.
+    Value: !Ref BuildSpecStorageBucket
+
+  CodePipelineName:
+    Description: The name of the CodePipeline.
+    Value: !Ref CodePipeline
