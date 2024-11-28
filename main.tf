@@ -1,5 +1,5 @@
 locals {
-  config     = yamldecode(file("${path.module}/config.yml"))
+  config     = yamldecode(file("${path.module}/env/${var.environment}/config.yml"))
   portfolios = local.config.portfolios
 
   products = flatten([

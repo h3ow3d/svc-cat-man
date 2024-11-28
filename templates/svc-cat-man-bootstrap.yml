@@ -87,10 +87,10 @@ Resources:
                 Resource: "*"
 
   # CodeBuild Project
-  CodeBuildProject:
+  DeployTask:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: ArtifactBuildProject
+      Name: deploy
       Source:
         Type: CODEPIPELINE
       Artifacts:
@@ -99,13 +99,16 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:5.0
         Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Name: environment
+            Value: "default" # Default value, overridden in CodePipeline stages
       ServiceRole: !GetAtt CodeBuildRole.Arn
 
   # CodePipeline
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
-      Name: RepoAndSpecPipeline
+      Name: DeployPipeline
       RoleArn: !GetAtt CodePipelineRole.Arn
       ArtifactStore:
         Type: S3
@@ -134,10 +137,10 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 S3Bucket: !Ref BuildSpecStorageBucketName
-                S3ObjectKey: "buildspecs/ArtifactBuildProject.yml"
-        - Name: Build
+                S3ObjectKey: "buildspecs/deploy.yml"
+        - Name: DeployToDevelopment
           Actions:
-            - Name: BuildArtifact
+            - Name: DeployDevelopment
               ActionTypeId:
                 Category: Build
                 Owner: AWS
@@ -147,9 +150,30 @@ Resources:
                 - Name: SourceArtifact
                 - Name: BuildSpecArtifact
               OutputArtifacts:
-                - Name: BuildOutput
+                - Name: DevelopmentOutput
               Configuration:
-                ProjectName: !Ref CodeBuildProject
+                ProjectName: !Ref DeployTask
+                EnvironmentVariablesOverride:
+                  - Name: environment
+                    Value: "development"
+        - Name: DeployToProduction
+          Actions:
+            - Name: DeployProduction
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              InputArtifacts:
+                - Name: SourceArtifact
+                - Name: BuildSpecArtifact
+              OutputArtifacts:
+                - Name: ProductionOutput
+              Configuration:
+                ProjectName: !Ref DeployTask
+                EnvironmentVariablesOverride:
+                  - Name: environment
+                    Value: "production"
 
 Outputs:
   ArtifactStorageBucketName:
