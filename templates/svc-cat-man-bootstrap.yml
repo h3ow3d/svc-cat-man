@@ -118,68 +118,66 @@ Resources:
 
   # CodePipeline
   CodePipeline:
-    Type: AWS::CodePipeline::Pipeline
-    Properties:
-      Name: DeployPipeline
-      RoleArn: !GetAtt CodePipelineRole.Arn
-      ArtifactStore:
-        Type: S3
-        Location: !Ref ArtifactStorageBucketName
-      Stages:
-        - Name: Source
-          Actions:
-            - Name: ArtifactSource
-              ActionTypeId:
-                Category: Source
-                Owner: AWS
-                Provider: S3
-                Version: "1"
-              OutputArtifacts:
-                - Name: SourceArtifact
-              Configuration:
-                S3Bucket: !Ref ArtifactStorageBucketName
-                S3ObjectKey: "artifact.zip"
-            - Name: BuildSpecSource
-              ActionTypeId:
-                Category: Source
-                Owner: AWS
-                Provider: S3
-                Version: "1"
-              OutputArtifacts:
-                - Name: BuildSpecArtifact
-              Configuration:
-                S3Bucket: !Ref BuildSpecStorageBucketName
-                S3ObjectKey: "buildspecs/deploy.yml"
-        - Name: DeployToDevelopment
-          Actions:
-            - Name: DeployDevelopment
-              ActionTypeId:
-                Category: Build
-                Owner: AWS
-                Provider: CodeBuild
-                Version: "1"
-              InputArtifacts:
-                - Name: SourceArtifact
-                - Name: BuildSpecArtifact
-              OutputArtifacts:
-                - Name: DevelopmentOutput
-              Configuration:
-                ProjectName: !Ref DeployDevelopmentCodeBuildProject
-        - Name: DeployToProduction
-          Actions:
-            - Name: DeployProduction
-              ActionTypeId:
-                Category: Build
-                Owner: AWS
-                Provider: CodeBuild
-                Version: "1"
-              InputArtifacts:
-                - Name: SourceArtifact
-                - Name: BuildSpecArtifact
-              OutputArtifacts:
-                - Name: ProductionOutput
-              Configuration:
-                ProjectName: !Ref DeployProductionCodeBuildProject
+  Type: AWS::CodePipeline::Pipeline
+  Properties:
+    Name: DeployPipeline
+    RoleArn: !GetAtt CodePipelineRole.Arn
+    ArtifactStore:
+      Type: S3
+      Location: !Ref ArtifactStorageBucketName
+    Stages:
+      - Name: Source
+        Actions:
+          - Name: ArtifactSource
+            ActionTypeId:
+              Category: Source
+              Owner: AWS
+              Provider: S3
+              Version: "1"
+            OutputArtifacts:
+              - Name: SourceArtifact
+            Configuration:
+              S3Bucket: !Ref ArtifactStorageBucketName
+              S3ObjectKey: "artifact.zip"
+          - Name: BuildSpecSource
+            ActionTypeId:
+              Category: Source
+              Owner: AWS
+              Provider: S3
+              Version: "1"
+            OutputArtifacts:
+              - Name: BuildSpecArtifact
+            Configuration:
+              S3Bucket: !Ref BuildSpecStorageBucketName
+              S3ObjectKey: "buildspecs/deploy.yml"
+      - Name: DeployToDevelopment
+        Actions:
+          - Name: DeployDevelopment
+            ActionTypeId:
+              Category: Build
+              Owner: AWS
+              Provider: CodeBuild
+              Version: "1"
+            InputArtifacts:
+              - Name: SourceArtifact
+              - Name: BuildSpecArtifact
+            Configuration:
+              ProjectName: !Ref DeployDevelopmentCodeBuildProject
+              PrimarySource: SourceArtifact
+      - Name: DeployToProduction
+        Actions:
+          - Name: DeployProduction
+            ActionTypeId:
+              Category: Build
+              Owner: AWS
+              Provider: CodeBuild
+              Version: "1"
+            InputArtifacts:
+              - Name: SourceArtifact
+              - Name: BuildSpecArtifact
+            Configuration:
+              ProjectName: !Ref DeployProductionCodeBuildProject
+              PrimarySource: SourceArtifact
 
 Outputs:
   ArtifactStorageBucketName:
