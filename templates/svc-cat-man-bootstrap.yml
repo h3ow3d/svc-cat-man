@@ -150,7 +150,7 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 S3Bucket: !Ref BuildSpecStorageBucketName
-                S3ObjectKey: "buildspecs/deploy.yml"
+                S3ObjectKey: "buildspecs/deploy.yml.zip"
         - Name: DeployToDevelopment
           Actions:
             - Name: DeployDevelopment

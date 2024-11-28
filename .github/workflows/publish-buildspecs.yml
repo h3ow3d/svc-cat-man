@@ -22,10 +22,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
 
-      # Step 3: Upload all YAML files in buildspecs/ to S3
-      - name: Upload BuildSpecs to S3
+      # Step 3: Zip each YAML file in buildspecs/ and upload to S3
+      - name: Zip and Upload BuildSpecs
         run: |
+          mkdir -p buildspecs
           for file in buildspecs/*.yml; do
-            echo "Uploading $file to S3..."
-            aws s3 cp "$file" "s3://${{ secrets.BUILDSPEC_STORAGE_BUCKET }}/$file"
+            filename=$(basename -- "$file")
+            zip "buildspecs/${filename%.yml}.zip" "$file"
+            echo "Uploading ${filename%.yml}.zip to S3..."
+            aws s3 cp "buildspecs/${filename%.yml}.zip" "s3://${{ secrets.BUILDSPEC_STORAGE_BUCKET }}/${filename%.yml}.zip"
           done
