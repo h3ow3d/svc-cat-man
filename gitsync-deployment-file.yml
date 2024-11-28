@@ -1,0 +1,4 @@
+template-file-path: templates/svc-cat-man-bootstrap.yml
+parameters:
+  BuildStorageBucketName: svc-cat-man-build-storage
+tags: {}

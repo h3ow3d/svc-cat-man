@@ -1,0 +1,91 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation template for S3 bucket and CodePipeline sourcing from the bucket.
+
+Parameters:
+  BuildStorageBucketName:
+    Type: String
+    Description: Name of the S3 bucket for storing build artifacts.
+
+Resources:
+  # S3 Bucket for Artifact Storage
+  BuildStorageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BuildStorageBucketName
+      VersioningConfiguration:
+        Status: Enabled
+
+  # IAM Role for CodePipeline
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: CodePipelinePermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub arn:aws:s3:::${BuildStorageBucketName}
+                  - !Sub arn:aws:s3:::${BuildStorageBucketName}/*
+
+  # CodePipeline
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: svc-cat-man-deployment-pipeline
+      RoleArn: !GetAtt CodePipelineRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref BuildStorageBucketName
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: S3_Source
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              OutputArtifacts:
+                - Name: SourceOutput
+              Configuration:
+                S3Bucket: !Ref BuildStorageBucketName
+                S3ObjectKey: "path/to/artifact.zip" # Use a specific key or prefix for the artifacts
+                PollForSourceChanges: true
+        - Name: Deploy
+          Actions:
+            - Name: Deploy_Action
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: "1"
+              InputArtifacts:
+                - Name: SourceOutput
+              Configuration:
+                ActionMode: CREATE_UPDATE
+                StackName: svc-cat-man-stack
+                TemplateConfiguration: "SourceOutput::config.json" # Optional for configuration files
+                Capabilities: CAPABILITY_NAMED_IAM
+
+Outputs:
+  BuildStorageBucketName:
+    Description: The name of the S3 bucket used for build artifacts.
+    Value: !Ref BuildStorageBucketName
+
+  CodePipelineName:
+    Description: The name of the CodePipeline.
+    Value: !Ref CodePipeline
