@@ -109,7 +109,6 @@ Resources:
         Image: aws/codebuild/standard:5.0
         Type: LINUX_CONTAINER
       ServiceRole: !GetAtt CodeBuildRole.Arn
-      BadgeEnabled: true
 
   # CodePipeline
   CodePipeline:
