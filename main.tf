@@ -17,6 +17,8 @@ locals {
   ])
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "random_string" "suffix" {
   length  = 6
   special = false
@@ -40,8 +42,10 @@ module "portfolios" {
   name          = each.value.name
   description   = each.value.description
   provider_name = each.value.provider_name
+
   principal_arns = [
-    "arn:aws:iam::575108940418:group/Admins"
+    for group in each.value.groups :
+    "arn:aws:iam::${data.aws_caller_identity.current.account_id}:group/${group}"
   ]
 }
 

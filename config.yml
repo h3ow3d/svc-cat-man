@@ -3,6 +3,9 @@ portfolios:
     description: |
       Portfolio for example products.
     provider_name: tech_org
+    groups:
+      - Administrators
+      - Developers
     products:
       - name: example-bucket
         owner: platform
