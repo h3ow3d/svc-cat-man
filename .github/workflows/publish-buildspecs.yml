@@ -28,7 +28,7 @@ jobs:
           mkdir -p buildspecs
           for file in buildspecs/*.yml; do
             filename=$(basename -- "$file")
-            zip "${filename%.yml}.zip" "$file"
+            zip -j "${filename%.yml}.zip" "$file"
             echo "Uploading ${filename%.yml}.zip to S3..."
             aws s3 cp "${filename%.yml}.zip" "s3://${{ secrets.BUILDSPEC_STORAGE_BUCKET }}/${filename%.yml}.zip"
           done
