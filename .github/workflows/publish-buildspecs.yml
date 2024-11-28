@@ -2,6 +2,8 @@ name: Publish BuildSpecs
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "buildspecs/*.yml"
 
