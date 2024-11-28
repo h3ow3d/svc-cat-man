@@ -164,7 +164,6 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployDevelopmentCodeBuildProject
-                BuildspecOverride: !Sub "s3://${BuildSpecStorageBucketName}/buildspecs/deploy.yml"
         - Name: DeployToProduction
           Actions:
             - Name: DeployProduction
@@ -178,7 +177,6 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployProductionCodeBuildProject
-                BuildspecOverride: !Sub "s3://${BuildSpecStorageBucketName}/buildspecs/deploy.yml"
 
 Outputs:
   ArtifactStorageBucketName:
