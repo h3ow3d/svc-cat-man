@@ -1,4 +1,5 @@
 template-file-path: templates/svc-cat-man-bootstrap.yml
 parameters:
-  BuildStorageBucketName: svc-cat-man-build-storage
+  ArtifactStorageBucketName: svc-cat-man-artifact-storage
+  BuildSpecStorageBucketName: svc-cat-man-buildspec-storage
 tags: {}

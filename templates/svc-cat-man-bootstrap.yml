@@ -1,17 +1,29 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: CloudFormation template for S3 bucket and CodePipeline sourcing from the bucket.
+Description: CloudFormation template for S3 buckets and CodePipeline sourcing from the buckets.
 
 Parameters:
-  BuildStorageBucketName:
+  ArtifactStorageBucketName:
     Type: String
-    Description: Name of the S3 bucket for storing build artifacts.
+    Description: Name of the S3 bucket for storing repo artifacts.
+
+  BuildSpecStorageBucketName:
+    Type: String
+    Description: Name of the S3 bucket for storing CodeBuild buildspec files.
 
 Resources:
   # S3 Bucket for Artifact Storage
-  BuildStorageBucket:
+  ArtifactStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref BuildStorageBucketName
+      BucketName: !Ref ArtifactStorageBucketName
+      VersioningConfiguration:
+        Status: Enabled
+
+  # S3 Bucket for BuildSpec Storage
+  BuildSpecStorageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BuildSpecStorageBucketName
       VersioningConfiguration:
         Status: Enabled
 
@@ -26,7 +38,6 @@ Resources:
             Principal:
               Service: codepipeline.amazonaws.com
             Action: sts:AssumeRole
-      Path: "/"
       Policies:
         - PolicyName: CodePipelinePermissions
           PolicyDocument:
@@ -35,56 +46,129 @@ Resources:
               - Effect: Allow
                 Action:
                   - s3:GetObject
-                  - s3:PutObject
                   - s3:ListBucket
                 Resource:
-                  - !Sub arn:aws:s3:::${BuildStorageBucketName}
-                  - !Sub arn:aws:s3:::${BuildStorageBucketName}/*
+                  - !Sub arn:aws:s3:::${ArtifactStorageBucketName}
+                  - !Sub arn:aws:s3:::${ArtifactStorageBucketName}/*
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub arn:aws:s3:::${BuildSpecStorageBucketName}
+                  - !Sub arn:aws:s3:::${BuildSpecStorageBucketName}/*
+
+  # IAM Role for CodeBuild
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodeBuildPermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub arn:aws:s3:::${ArtifactStorageBucketName}
+                  - !Sub arn:aws:s3:::${ArtifactStorageBucketName}/*
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub arn:aws:s3:::${BuildSpecStorageBucketName}
+                  - !Sub arn:aws:s3:::${BuildSpecStorageBucketName}/*
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  # CodeBuild Project
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: ArtifactBuildProject
+      Source:
+        Type: S3
+        Location: !Sub "${BuildSpecStorageBucketName}/ArtifactBuildProject.yml"
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:5.0
+        Type: LINUX_CONTAINER
+      Artifacts:
+        Type: CODEPIPELINE
+      ServiceRole: !GetAtt CodeBuildRole.Arn
 
   # CodePipeline
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
-      Name: svc-cat-man-deployment-pipeline
+      Name: RepoAndSpecPipeline
       RoleArn: !GetAtt CodePipelineRole.Arn
       ArtifactStore:
         Type: S3
-        Location: !Ref BuildStorageBucketName
+        Location: !Ref ArtifactStorageBucketName
       Stages:
         - Name: Source
           Actions:
-            - Name: S3_Source
+            - Name: ArtifactSource
               ActionTypeId:
                 Category: Source
                 Owner: AWS
                 Provider: S3
                 Version: "1"
               OutputArtifacts:
-                - Name: SourceOutput
+                - Name: SourceArtifact
               Configuration:
-                S3Bucket: !Ref BuildStorageBucketName
-                S3ObjectKey: "path/to/artifact.zip" # Use a specific key or prefix for the artifacts
-                PollForSourceChanges: true
-        - Name: Deploy
-          Actions:
-            - Name: Deploy_Action
+                S3Bucket: !Ref ArtifactStorageBucketName
+                S3ObjectKey: "artifact.zip"
+            - Name: BuildSpecSource
               ActionTypeId:
-                Category: Deploy
+                Category: Source
                 Owner: AWS
-                Provider: CloudFormation
+                Provider: S3
+                Version: "1"
+              OutputArtifacts:
+                - Name: BuildSpecArtifact
+              Configuration:
+                S3Bucket: !Ref BuildSpecStorageBucketName
+                S3ObjectKey: "ArtifactBuildProject.yml"
+        - Name: Build
+          Actions:
+            - Name: BuildArtifact
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
                 Version: "1"
               InputArtifacts:
-                - Name: SourceOutput
+                - Name: SourceArtifact
+                - Name: BuildSpecArtifact
+              OutputArtifacts:
+                - Name: BuildOutput
               Configuration:
-                ActionMode: CREATE_UPDATE
-                StackName: svc-cat-man-stack
-                TemplateConfiguration: "SourceOutput::config.json" # Optional for configuration files
-                Capabilities: CAPABILITY_NAMED_IAM
+                ProjectName: !Ref CodeBuildProject
 
 Outputs:
-  BuildStorageBucketName:
-    Description: The name of the S3 bucket used for build artifacts.
-    Value: !Ref BuildStorageBucketName
+  ArtifactStorageBucketName:
+    Description: The name of the S3 bucket for storing artifacts.
+    Value: !Ref ArtifactStorageBucket
+
+  BuildSpecStorageBucketName:
+    Description: The name of the S3 bucket for storing buildspecs.
+    Value: !Ref BuildSpecStorageBucket
 
   CodePipelineName:
     Description: The name of the CodePipeline.

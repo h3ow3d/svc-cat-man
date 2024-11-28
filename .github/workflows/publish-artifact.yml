@@ -1,4 +1,4 @@
-name: Publish Project to S3
+name: Publish Artifact
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  upload-project:
+  upload-artifact:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,12 +18,12 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: eu-west-2
 
       - name: Package project
         run: |
-          zip -r svc-cat-man.zip . -x ".git/*"
+          zip -r artifact.zip . -x ".git/*"
 
       - name: Upload to S3
         run: |
-          aws s3 cp svc-cat-man.zip s3://${{ secrets.BUILD_STORAGE_BUCKET }}/project.zip
+          aws s3 cp artifact.zip s3://${{ secrets.ARTIFACT_STORAGE_BUCKET }}/artifact.zip
