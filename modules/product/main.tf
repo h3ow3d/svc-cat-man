@@ -3,7 +3,6 @@ locals {
   product_template_full_path = "${path.cwd}/portfolios/${var.portfolio_name}/${local.product_template_filename}"
 }
 
-
 resource "aws_servicecatalog_product" "product" {
   name  = var.name
   owner = var.owner

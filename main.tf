@@ -2,12 +2,11 @@ locals {
   config     = yamldecode(file("${path.module}/config.yml"))
   portfolios = local.config.portfolios
 
-  # Flatten the products with associated portfolio metadata
   products = flatten([
     for portfolio in local.portfolios : [
       for product in portfolio.products : {
         portfolio_name = portfolio.name
-        portfolio_id   = aws_servicecatalog_portfolio.portfolios[portfolio.name].id
+        portfolio_id   = module.portfolios[portfolio.name].portfolio_id
         name           = product.name
         description    = portfolio.description
         owner          = product.owner
@@ -34,15 +33,18 @@ resource "aws_s3_bucket" "template_storage" {
   }
 }
 
-resource "aws_servicecatalog_portfolio" "portfolios" {
+module "portfolios" {
   for_each = { for portfolio in local.portfolios : portfolio.name => portfolio }
 
+  source        = "./modules/portfolio"
   name          = each.value.name
   description   = each.value.description
   provider_name = each.value.provider_name
+  principal_arns = [
+    "arn:aws:iam::575108940418:group/Admins"
+  ]
 }
 
-# Iterate over the flattened list of products
 module "products" {
   for_each = { for product in local.products : product.name => product }
 
