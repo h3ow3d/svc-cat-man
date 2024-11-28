@@ -95,9 +95,6 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:5.0
         Type: LINUX_CONTAINER
-        EnvironmentVariables:
-          - Name: environment
-            Value: "development"
       ServiceRole: !GetAtt CodeBuildRole.Arn
 
   DeployProductionCodeBuildProject:
@@ -112,9 +109,6 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:5.0
         Type: LINUX_CONTAINER
-        EnvironmentVariables:
-          - Name: environment
-            Value: "production"
       ServiceRole: !GetAtt CodeBuildRole.Arn
 
   # CodePipeline
@@ -164,6 +158,8 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployDevelopmentCodeBuildProject
+                PrimarySource: BuildSpecArtifact
+                EnvironmentVariables: '[{"name":"ENVIRONMENT","value":"development","type":"PLAINTEXT"}]'
         - Name: DeployToProduction
           Actions:
             - Name: DeployProduction
@@ -177,6 +173,8 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployProductionCodeBuildProject
+                PrimarySource: BuildSpecArtifact
+                EnvironmentVariables: '[{"name":"ENVIRONMENT","value":"production","type":"PLAINTEXT"}]'
 
 Outputs:
   ArtifactStorageBucketName:

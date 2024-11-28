@@ -13,25 +13,25 @@ phases:
 
   pre_build:
     commands:
-      - echo "Preparing deployment for environment: $environment"
+      - echo "Preparing deployment: $ENVIRONMENT"
       - echo "Unzipping source artifact..."
       - mkdir -p /tmp/source
       - unzip -o artifact.zip -d /tmp/source
 
   build:
     commands:
-      - echo "Starting deployment for environment: $environment"
+      - echo "Starting deployment: $ENVIRONMENT"
       - cd /tmp/source
       - echo "Initializing Terraform..."
       - terraform init
       - echo "Validating Terraform..."
       - terraform validate
       - echo "Applying Terraform..."
-      - terraform apply -auto-approve -var="environment=$environment"
+      - TF_VAR_environment=$ENVIRONMENT terraform apply -auto-approve
 
   post_build:
     commands:
-      - echo "Deployment completed for environment: $environment"
+      - echo "Deployment completed: $ENVIRONMENT"
 
 artifacts:
   files:
