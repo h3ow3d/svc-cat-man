@@ -101,14 +101,13 @@ Resources:
     Properties:
       Name: ArtifactBuildProject
       Source:
-        Type: S3
-        Location: !Sub "${BuildSpecStorageBucketName}/ArtifactBuildProject.yml"
+        Type: CODEPIPELINE
+      Artifacts:
+        Type: CODEPIPELINE
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:5.0
         Type: LINUX_CONTAINER
-      Artifacts:
-        Type: CODEPIPELINE
       ServiceRole: !GetAtt CodeBuildRole.Arn
 
   # CodePipeline
