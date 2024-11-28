@@ -134,7 +134,7 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 S3Bucket: !Ref BuildSpecStorageBucketName
-                S3ObjectKey: "ArtifactBuildProject.yml"
+                S3ObjectKey: "buildspecs/ArtifactBuildProject.yml"
         - Name: Build
           Actions:
             - Name: BuildArtifact
