@@ -3,7 +3,7 @@ name: Publish BuildSpecs
 on:
   push:
     paths:
-      - "buildspecs/**/*.yml" # Trigger only when YAML files in the buildspecs directory are changed
+      - "buildspecs/*.yml"
 
 jobs:
   publish-buildspecs:
@@ -25,7 +25,7 @@ jobs:
       # Step 3: Upload all YAML files in buildspecs/ to S3
       - name: Upload BuildSpecs to S3
         run: |
-          for file in buildspecs/**/*.yml; do
+          for file in buildspecs/*.yml; do
             echo "Uploading $file to S3..."
             aws s3 cp "$file" "s3://${{ secrets.BUILDSPEC_STORAGE_BUCKET }}/$file"
           done
