@@ -38,7 +38,7 @@ Resources:
   StateStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "${AWS::StackName}-${StateBucketName}"
+      BucketName: !Sub ${AWS::StackName}-${StateBucketName}
       VersioningConfiguration:
         Status: Enabled
       LifecycleConfiguration:
@@ -189,7 +189,7 @@ Resources:
       RoleArn: !GetAtt CodePipelineRole.Arn
       ArtifactStore:
         Type: S3
-        Location: !GetAtt ArtifactStorageBucket.Arn
+        Location: !Ref ArtifactStorageBucket
       Stages:
         - Name: Source
           Actions:
