@@ -29,8 +29,8 @@ resource "aws_s3_bucket" "product_template_storage" {
   force_destroy = true
 
   tags = {
-    Name        = "YAML Upload Bucket"
-    Environment = "Production"
+    Name        = "Storage for Service Catalog Product templates."
+    Environment = var.environment
   }
 }
 
