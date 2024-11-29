@@ -135,6 +135,7 @@ Resources:
                   - s3:*
                   - dynamodb:*
                   - servicecatalog:*
+                  - iam::*
                 Resource:
                   - "*"
 
