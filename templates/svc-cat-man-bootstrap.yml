@@ -69,13 +69,6 @@ Resources:
             Resource:
               - !Sub "${StateStorageBucket.Arn}"
               - !Sub "${StateStorageBucket.Arn}/terraform-state/*"
-          # Deny all other access to the bucket
-          - Effect: Deny
-            Principal: "*"
-            Action: "s3:*"
-            Resource:
-              - !Sub "${StateStorageBucket.Arn}"
-              - !Sub "${StateStorageBucket.Arn}/*"
 
   # DynamoDB Table for State Locking
   StateLockTable:
