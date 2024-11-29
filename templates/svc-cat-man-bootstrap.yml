@@ -60,7 +60,7 @@ Resources:
           # Allow Terraform to manage state files
           - Effect: Allow
             Principal:
-              AWS: !GetAtt CodePipelineRole.Arn
+              AWS: !GetAtt CodeBuildRole.Arn
             Action:
               - s3:GetObject
               - s3:PutObject
