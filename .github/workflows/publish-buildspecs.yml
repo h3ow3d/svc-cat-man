@@ -26,5 +26,6 @@ jobs:
       - name: Zip and Upload BuildSpecs
         run: |
           for dir in buildspecs/*/; do
-            aws s3 cp  "${dir}buildspec.yml" "s3://${{ secrets.BUILDSPEC_STORAGE_BUCKET }}/${dir}/buildspec.yml"
+            buildspec_file="${dir}buildspec.yml"
+            aws s3 cp ${buildspec_file} "s3://${{ secrets.BUILDSPEC_STORAGE_BUCKET }}/${buildspec_file}"
           done
