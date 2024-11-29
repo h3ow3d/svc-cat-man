@@ -3,6 +3,8 @@ portfolios:
     description: |
       Portfolio for example products.
     provider_name: tech_org
+    usage_policy_arns:
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess
     groups:
       - Administrators
       - Developers
