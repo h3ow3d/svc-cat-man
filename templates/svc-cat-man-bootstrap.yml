@@ -96,6 +96,10 @@ Resources:
             Principal:
               Service: codepipeline.amazonaws.com
             Action: sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::575108940418:user/admin
+            Action: sts:AssumeRole
       Policies:
         - PolicyName: !Sub ${AWS::StackName}CodePipelinePermissions
           PolicyDocument:
