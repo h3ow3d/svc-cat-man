@@ -14,7 +14,7 @@ phases:
       - echo "Planning Terraform..."
       - TF_VAR_environment="${ENVIRONMENT}" terraform plan
       - echo "Applying Terraform..."
-      - terraform apply -auto-approve -var="environment=$ENVIRONMENT"
+      - TF_VAR_environment="${ENVIRONMENT}" terraform apply -auto-approve
 
 artifacts:
   files:
