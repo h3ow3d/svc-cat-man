@@ -3,6 +3,7 @@ version: 0.2
 phases:
   build:
     commands:
+      - cd $CODEBUILD_SRC_DIR_BuildSpecArtifact
       - ls -lsah
       # - echo "Initializing Terraform..."
       # - terraform init
