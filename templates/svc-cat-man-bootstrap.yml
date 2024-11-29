@@ -10,13 +10,13 @@ Parameters:
     Type: String
     Description: Name of the S3 bucket for storing CodeBuild buildspec files.
 
-  StateStorageBucketName:
-    Type: String
-    Description: Name of the S3 bucket for storing Terraform state.
+#  StateStorageBucketName:
+#    Type: String
+#    Description: Name of the S3 bucket for storing Terraform state.
 
-  StateLockTableName:
-    Type: String
-    Description: Name of the DynamoDB table for Terraform state locking.
+#  StateLockTableName:
+#    Type: String
+#    Description: Name of the DynamoDB table for Terraform state locking.
 
 Resources:
   # S3 Bucket for Artifact Storage
@@ -35,56 +35,56 @@ Resources:
       VersioningConfiguration:
         Status: Enabled
 
-  StateStorageBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub "${AWS::StackName}-${StateStorageBucketName}"
-      VersioningConfiguration:
-        Status: Enabled
-      LifecycleConfiguration:
-        Rules:
-          - Status: Enabled
-            ExpirationInDays: 365
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
-
-  StateStorageBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref StateStorageBucket
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          # Allow Terraform to manage state files
-          - Effect: Allow
-            Principal:
-              AWS: !GetAtt CodePipelineRole.Arn
-            Action:
-              - s3:GetObject
-              - s3:PutObject
-              - s3:DeleteObject
-              - s3:ListBucket
-            Resource:
-              - !Sub "${StateStorageBucket.Arn}"
-              - !Sub "${StateStorageBucket.Arn}/terraform-state/*"
-
-  # DynamoDB Table for State Locking
-  StateLockTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: !Sub ${AWS::StackName}-${StateLockTableName}
-      AttributeDefinitions:
-        - AttributeName: LockID
-          AttributeType: S
-      KeySchema:
-        - AttributeName: LockID
-          KeyType: HASH
-      BillingMode: PAY_PER_REQUEST
-      SSESpecification:
-        SSEEnabled: true
-
+#  StateStorageBucket:
+#    Type: AWS::S3::Bucket
+#    Properties:
+#      BucketName: !Sub "${AWS::StackName}-${StateStorageBucketName}"
+#      VersioningConfiguration:
+#        Status: Enabled
+#      LifecycleConfiguration:
+#        Rules:
+#          - Status: Enabled
+#            ExpirationInDays: 365
+#      BucketEncryption:
+#        ServerSideEncryptionConfiguration:
+#          - ServerSideEncryptionByDefault:
+#              SSEAlgorithm: AES256
+#
+#  StateStorageBucketPolicy:
+#    Type: AWS::S3::BucketPolicy
+#    Properties:
+#      Bucket: !Ref StateStorageBucket
+#      PolicyDocument:
+#        Version: "2012-10-17"
+#        Statement:
+#          # Allow Terraform to manage state files
+#          - Effect: Allow
+#            Principal:
+#              AWS: !GetAtt CodePipelineRole.Arn
+#            Action:
+#              - s3:GetObject
+#              - s3:PutObject
+#              - s3:DeleteObject
+#              - s3:ListBucket
+#            Resource:
+#              - !Sub "${StateStorageBucket.Arn}"
+#              - !Sub "${StateStorageBucket.Arn}/terraform-state/*"
+#
+#  # DynamoDB Table for State Locking
+#  StateLockTable:
+#    Type: AWS::DynamoDB::Table
+#    Properties:
+#      TableName: !Sub ${AWS::StackName}-${StateLockTableName}
+#      AttributeDefinitions:
+#        - AttributeName: LockID
+#          AttributeType: S
+#      KeySchema:
+#        - AttributeName: LockID
+#          KeyType: HASH
+#      BillingMode: PAY_PER_REQUEST
+#      SSESpecification:
+#        SSEEnabled: true
+#
   # IAM Role for CodePipeline
   CodePipelineRole:
     Type: AWS::IAM::Role
@@ -129,22 +129,22 @@ Resources:
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                  - s3:ListBucket
-                  - s3:PutObject
-                Resource:
-                  - !Sub "${StateStorageBucket.Arn}"
-                  - !Sub "${StateStorageBucket.Arn}/*"
-              - Effect: Allow
-                Action:
-                  - dynamodb:PutItem
-                  - dynamodb:GetItem
-                  - dynamodb:DeleteItem
-                  - dynamodb:UpdateItem
-                Resource:
-                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${StateLockTableName}
+#              - Effect: Allow
+#                Action:
+#                  - s3:GetObject
+#                  - s3:ListBucket
+#                  - s3:PutObject
+#                Resource:
+#                  - !Sub "${StateStorageBucket.Arn}"
+#                  - !Sub "${StateStorageBucket.Arn}/*"
+#              - Effect: Allow
+#                Action:
+#                  - dynamodb:PutItem
+#                  - dynamodb:GetItem
+#                  - dynamodb:DeleteItem
+#                  - dynamodb:UpdateItem
+#                Resource:
+#                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${StateLockTableName}
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
@@ -255,13 +255,13 @@ Outputs:
     Description: The name of the S3 bucket for storing buildspecs.
     Value: !Ref BuildSpecStorageBucket
 
-  StateStorageBucketName:
-    Description: The name of the S3 bucket for storing Terraform state.
-    Value: !Ref StateStorageBucket
+#  StateStorageBucketName:
+#    Description: The name of the S3 bucket for storing Terraform state.
+#    Value: !Ref StateStorageBucket
 
-  StateLockTableName:
-    Description: The name of the DynamoDB table for Terraform state locking.
-    Value: !Ref StateLockTable
+#  StateLockTableName:
+#    Description: The name of the DynamoDB table for Terraform state locking.
+#    Value: !Ref StateLockTable
 
   CodePipelineName:
     Description: The name of the CodePipeline.
