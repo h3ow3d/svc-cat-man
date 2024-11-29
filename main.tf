@@ -24,8 +24,8 @@ resource "random_string" "suffix" {
   special = false
 }
 
-resource "aws_s3_bucket" "template_storage" {
-  bucket        = lower("${var.environment}-my-yaml-bucket-${random_string.suffix.result}")
+resource "aws_s3_bucket" "product_template_storage" {
+  bucket        = lower("${var.environment}-product-template-storage-${random_string.suffix.result}")
   force_destroy = true
 
   tags = {
@@ -53,14 +53,14 @@ module "portfolios" {
 module "products" {
   for_each = { for product in local.products : product.name => product }
 
-  source                              = "./modules/product"
-  environment                         = var.environment
-  name                                = each.value.name
-  owner                               = each.value.owner
-  type                                = each.value.type
-  product_version                     = each.value.version
-  template_storage_bucket_id          = aws_s3_bucket.template_storage.id
-  template_storage_bucket_domain_name = aws_s3_bucket.template_storage.bucket_domain_name
-  portfolio_id                        = each.value.portfolio_id
-  portfolio_name                      = each.value.portfolio_name
+  source                                      = "./modules/product"
+  environment                                 = var.environment
+  name                                        = each.value.name
+  owner                                       = each.value.owner
+  type                                        = each.value.type
+  product_version                             = each.value.version
+  product_template_storage_bucket_id          = aws_s3_bucket.product_template_storage.id
+  product_template_storage_bucket_domain_name = aws_s3_bucket.product_template_storage.bucket_domain_name
+  portfolio_id                                = each.value.portfolio_id
+  portfolio_name                              = each.value.portfolio_name
 }

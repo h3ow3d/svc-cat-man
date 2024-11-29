@@ -18,11 +18,11 @@ variable "product_version" {
   type = string
 }
 
-variable "template_storage_bucket_id" {
+variable "product_template_storage_bucket_id" {
   type = string
 }
 
-variable "template_storage_bucket_domain_name" {
+variable "product_template_storage_bucket_domain_name" {
   type = string
 }
 
