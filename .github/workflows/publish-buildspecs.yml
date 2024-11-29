@@ -25,7 +25,10 @@ jobs:
       # Step 3: Zip and upload buildspec.yml files
       - name: Zip and Upload BuildSpecs
         run: |
+          mkdir -p buildspecs-zipped
           for dir in buildspecs/*/; do
-            buildspec_file="${dir}buildspec.yml"
-            aws s3 cp ${buildspec_file} "s3://${{ secrets.BUILDSPEC_STORAGE_BUCKET }}/${buildspec_file}"
+            foldername=$(basename "$dir")
+            zip -j "buildspecs-zipped/${foldername}.zip" "${dir}buildspec.yml"
+            echo "Uploading ${foldername}.zip to S3..."
+            aws s3 cp "buildspecs-zipped/${foldername}.zip" "s3://${{ secrets.BUILDSPEC_STORAGE_BUCKET }}/${foldername}.zip"
           done
