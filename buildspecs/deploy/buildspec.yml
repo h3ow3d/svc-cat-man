@@ -8,7 +8,7 @@ phases:
       - echo "Initializing Terraform..."
       - terraform init
       - echo "Selecting workspace..."
-      - terraform workspace select -or-create=true $environment
+      - terraform workspace select -or-create=true $ENVIRONMENT
       - echo "Validating Terraform..."
       - terraform validate
       - echo "Planning Terraform..."
