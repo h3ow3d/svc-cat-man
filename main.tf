@@ -42,6 +42,7 @@ module "portfolios" {
   name          = each.value.name
   description   = each.value.description
   provider_name = each.value.provider_name
+  policy_arns   = each.value.usage_policy_arns
 
   principal_arns = [
     for group in each.value.groups :
