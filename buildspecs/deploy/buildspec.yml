@@ -11,21 +11,16 @@ phases:
       - echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
       - apt-get update && apt-get install -y terraform
 
-  pre_build:
-    commands:
-      - echo "Preparing source artifact..."
-      - mkdir -p /tmp/source
-      - unzip -o artifact.zip -d /tmp/source
-
   build:
     commands:
       - echo "Initializing Terraform..."
-      - cd /tmp/source
       - terraform init
       - echo "Validating Terraform..."
       - terraform validate
-      - echo "Applying Terraform..."
-      - terraform apply -auto-approve -var="environment=$ENVIRONMENT"
+      - echo "Planning Terraform..."
+      - terraform plan -var="environment=$ENVIRONMENT"
+      - # echo "Applying Terraform..."
+      - # terraform apply -auto-approve -var="environment=$ENVIRONMENT"
 
 artifacts:
   files:
