@@ -57,11 +57,25 @@ Resources:
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
+          # Allow Terraform to manage state files
           - Effect: Allow
-            Principal: "*"
+            Principal:
+              AWS: !GetAtt CodePipelineRole.Arn
             Action:
               - s3:GetObject
-            Resource: !Sub "${StateStorageBucket.Arn}/*"
+              - s3:PutObject
+              - s3:DeleteObject
+              - s3:ListBucket
+            Resource:
+              - !Sub "${StateStorageBucket.Arn}"
+              - !Sub "${StateStorageBucket.Arn}/terraform-state/*"
+          # Deny all other access to the bucket
+          - Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !Sub "${StateStorageBucket.Arn}"
+              - !Sub "${StateStorageBucket.Arn}/*"
 
   # DynamoDB Table for State Locking
   StateLockTable:
