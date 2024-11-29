@@ -24,16 +24,16 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
     BucketName: !Sub ${AWS::StackName}-${ArtifactStorageBucketName}
-      VersioningConfiguration:
-        Status: Enabled
+    VersioningConfiguration:
+      Status: Enabled
 
   # S3 Bucket for BuildSpec Storage
   BuildSpecStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
     BucketName: !Sub ${AWS::StackName}-${BuildSpecStorageBucketName}
-      VersioningConfiguration:
-        Status: Enabled
+    VersioningConfiguration:
+      Status: Enabled
 
   # S3 Bucket for Terraform State Storage
   StateStorageBucket:
