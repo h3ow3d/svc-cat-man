@@ -134,6 +134,7 @@ Resources:
                   - logs:*
                   - s3:*
                   - dynamodb:*
+                  - servicecatalog:*
                 Resource:
                   - "*"
 
