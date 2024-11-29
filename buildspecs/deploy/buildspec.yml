@@ -8,7 +8,7 @@ phases:
       - echo "Validating Terraform..."
       - terraform validate
       - echo "Planning Terraform..."
-      - TF_VAR_environment="${$ENVIRONMENT}" terraform plan
+      - TF_VAR_environment="${ENVIRONMENT}" terraform plan
       - # echo "Applying Terraform..."
       - # terraform apply -auto-approve -var="environment=$ENVIRONMENT"
 
