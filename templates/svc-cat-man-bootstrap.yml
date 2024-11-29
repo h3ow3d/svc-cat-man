@@ -138,8 +138,8 @@ Resources:
                   - s3:ListBucket
                   - s3:PutObject
                 Resource:
-                  - !Sub arn:aws:s3:::${StateStorageBucketName}
-                  - !Sub arn:aws:s3:::${StateStorageBucketName}/*
+                  - !Sub "${StateStorageBucket.Arn}"
+                  - !Sub "${StateStorageBucket.Arn}/*"
               - Effect: Allow
                 Action:
                   - dynamodb:PutItem
@@ -192,7 +192,7 @@ Resources:
       RoleArn: !GetAtt CodePipelineRole.Arn
       ArtifactStore:
         Type: S3
-        Location: !Ref ArtifactStorageBucketName
+        Location: !GetAtt ArtifactStorageBucket.Arn
       Stages:
         - Name: Source
           Actions:
@@ -205,7 +205,7 @@ Resources:
               OutputArtifacts:
                 - Name: SourceArtifact
               Configuration:
-                S3Bucket: !Ref ArtifactStorageBucketName
+                S3Bucket: !GetAtt ArtifactStorageBucket.Arn
                 S3ObjectKey: "artifact.zip"
             - Name: BuildSpecSource
               ActionTypeId:
@@ -216,7 +216,7 @@ Resources:
               OutputArtifacts:
                 - Name: BuildSpecArtifact
               Configuration:
-                S3Bucket: !Ref BuildSpecStorageBucketName
+                S3Bucket: !GetAtt BuildSpecStorageBucket.Arn
                 S3ObjectKey: "deploy.zip"
         - Name: DeployToDevelopment
           Actions:
