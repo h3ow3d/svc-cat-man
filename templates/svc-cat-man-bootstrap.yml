@@ -68,7 +68,7 @@ Resources:
               - s3:ListBucket
             Resource:
               - !Sub "${StateStorageBucket.Arn}"
-              - !Sub "${StateStorageBucket.Arn}/terraform-state/*"
+              - !Sub "${StateStorageBucket.Arn}/terraform.tfstate"
 
   # DynamoDB Table for State Locking
   StateLockTable:
