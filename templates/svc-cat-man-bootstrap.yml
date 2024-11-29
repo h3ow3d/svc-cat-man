@@ -131,26 +131,11 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - s3:GetObject
-                  - s3:ListBucket
-                  - s3:PutObject
+                  - logs:*
+                  - s3:*
+                  - dynamodb:*
                 Resource:
-                  - !Sub "${StateStorageBucket.Arn}"
-                  - !Sub "${StateStorageBucket.Arn}/*"
-              - Effect: Allow
-                Action:
-                  - dynamodb:PutItem
-                  - dynamodb:GetItem
-                  - dynamodb:DeleteItem
-                  - dynamodb:UpdateItem
-                Resource:
-                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${StateLockTableName}
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: "*"
+                  - "*"
 
   # CodeBuild Projects
   DeployDevelopmentCodeBuildProject:
