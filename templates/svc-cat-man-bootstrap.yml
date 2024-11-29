@@ -202,7 +202,7 @@ Resources:
               OutputArtifacts:
                 - Name: SourceArtifact
               Configuration:
-                S3Bucket: !GetAtt ArtifactStorageBucket.Arn
+                S3Bucket: !Ref ArtifactStorageBucket
                 S3ObjectKey: "artifact.zip"
             - Name: BuildSpecSource
               ActionTypeId:
@@ -213,7 +213,7 @@ Resources:
               OutputArtifacts:
                 - Name: BuildSpecArtifact
               Configuration:
-                S3Bucket: !GetAtt BuildSpecStorageBucket.Arn
+                S3Bucket: !Ref BuildSpecStorageBucket
                 S3ObjectKey: "deploy.zip"
         - Name: DeployToDevelopment
           Actions:
