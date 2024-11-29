@@ -2,6 +2,6 @@ template-file-path: templates/svc-cat-man-bootstrap.yml
 parameters:
   ArtifactStorageBucketName: artifact-storage
   BuildSpecStorageBucketName: buildspec-storage
-#  StateStorageBucketName: state-storage
-#  StateLockTableName: state-lock-table
+  StateBucketName: terraform-state
+  StateLockTableName: state-lock-table
 tags: {}
