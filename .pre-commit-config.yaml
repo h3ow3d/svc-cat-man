@@ -30,3 +30,10 @@ repos:
       - id: conventional-pre-commit
         stages: [commit-msg]
         args: [--strict, --force-scope, feat, fix, chore, test, custom]
+
+  # CloudFormation Linter (cfn-lint)
+  - repo: https://github.com/aws-cloudformation/cfn-lint
+    rev: v1.20.0  # Replace with the latest version as needed
+    hooks:
+      - id: cfn-lint
+        files: ^(templates/|portfolios/).*\.(yaml|yml)$

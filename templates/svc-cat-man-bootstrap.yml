@@ -23,40 +23,51 @@ Resources:
   ArtifactStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
-    BucketName: !Sub ${AWS::StackName}-${ArtifactStorageBucketName}
-    VersioningConfiguration:
-      Status: Enabled
+      BucketName: !Sub ${AWS::StackName}-${ArtifactStorageBucketName}
+      VersioningConfiguration:
+        Status: Enabled
 
   # S3 Bucket for BuildSpec Storage
   BuildSpecStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
-    BucketName: !Sub ${AWS::StackName}-${BuildSpecStorageBucketName}
-    VersioningConfiguration:
-      Status: Enabled
+      BucketName: !Sub ${AWS::StackName}-${BuildSpecStorageBucketName}
+      VersioningConfiguration:
+        Status: Enabled
 
-  # S3 Bucket for Terraform State Storage
   StateStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${AWS::StackName}-${StateStorageBucketName}
+      BucketName: !Sub "${AWS::StackName}-${StateStorageBucketName}"
       VersioningConfiguration:
         Status: Enabled
       LifecycleConfiguration:
         Rules:
           - Status: Enabled
-            ExpirationInDays: 365 # Optional: Delete objects after 1 year
-      AccessControl: Private
+            ExpirationInDays: 365
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
 
+  StateStorageBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StateStorageBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action:
+              - s3:GetObject
+            Resource: !Sub "${StateStorageBucket.Arn}/*"
+
   # DynamoDB Table for State Locking
   StateLockTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !!Sub ${AWS::StackName}-${StateLockTableName}
+      TableName: !Sub ${AWS::StackName}-${StateLockTableName}
       AttributeDefinitions:
         - AttributeName: LockID
           AttributeType: S
@@ -79,7 +90,7 @@ Resources:
               Service: codepipeline.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: !Sub ${AWS::StackName}${CodePipelinePermissions}
+        - PolicyName: !Sub ${AWS::StackName}CodePipelinePermissions
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -103,7 +114,7 @@ Resources:
               Service: codebuild.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: !Sub ${AWS::StackName}${CodeBuildPermissions}
+        - PolicyName: !Sub ${AWS::StackName}CodeBuildPermissions
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
