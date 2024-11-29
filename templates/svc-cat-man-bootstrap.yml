@@ -159,8 +159,6 @@ Resources:
               Configuration:
                 ProjectName: !Ref DeployDevelopmentCodeBuildProject
                 PrimarySource: BuildSpecArtifact
-                BatchEnabled: true
-                CombineArtifacts: true
                 EnvironmentVariables: '[{"name":"ENVIRONMENT","value":"development","type":"PLAINTEXT"}]'
         - Name: DeployToProduction
           Actions:
@@ -176,8 +174,6 @@ Resources:
               Configuration:
                 ProjectName: !Ref DeployProductionCodeBuildProject
                 PrimarySource: BuildSpecArtifact
-                BatchEnabled: true
-                CombineArtifacts: true
                 EnvironmentVariables: '[{"name":"ENVIRONMENT","value":"production","type":"PLAINTEXT"}]'
 
 Outputs:
