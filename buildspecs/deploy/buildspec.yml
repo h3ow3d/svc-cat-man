@@ -3,14 +3,15 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "Initializing Terraform..."
-      - terraform init
-      - echo "Validating Terraform..."
-      - terraform validate
-      - echo "Planning Terraform..."
-      - TF_VAR_environment="${ENVIRONMENT}" terraform plan
-      - # echo "Applying Terraform..."
-      - # terraform apply -auto-approve -var="environment=$ENVIRONMENT"
+      - ls -lsah
+      # - echo "Initializing Terraform..."
+      # - terraform init
+      # - echo "Validating Terraform..."
+      # - terraform validate
+      # - echo "Planning Terraform..."
+      # - TF_VAR_environment="${ENVIRONMENT}" terraform plan
+      # - echo "Applying Terraform..."
+      # - terraform apply -auto-approve -var="environment=$ENVIRONMENT"
 
 artifacts:
   files:
