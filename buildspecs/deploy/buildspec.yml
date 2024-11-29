@@ -3,16 +3,18 @@ version: 0.2
 phases:
   build:
     commands:
+      # change to secondary artifact directory
       - cd $CODEBUILD_SRC_DIR_SourceArtifact
-      - ls -lsah
-      # - echo "Initializing Terraform..."
-      # - terraform init
-      # - echo "Validating Terraform..."
-      # - terraform validate
-      # - echo "Planning Terraform..."
-      # - TF_VAR_environment="${ENVIRONMENT}" terraform plan
-      # - echo "Applying Terraform..."
-      # - terraform apply -auto-approve -var="environment=$ENVIRONMENT"
+      - echo "Initializing Terraform..."
+      - terraform init
+      - echo "Selecting workspace..."
+      - terraform workspace select -or-create=true $environment
+      - echo "Validating Terraform..."
+      - terraform validate
+      - echo "Planning Terraform..."
+      - TF_VAR_environment="${ENVIRONMENT}" terraform plan
+      - echo "Applying Terraform..."
+      - terraform apply -auto-approve -var="environment=$ENVIRONMENT"
 
 artifacts:
   files:
