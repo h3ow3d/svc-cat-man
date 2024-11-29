@@ -1,5 +1,7 @@
 template-file-path: templates/svc-cat-man-bootstrap.yml
 parameters:
-  ArtifactStorageBucketName: svc-cat-man-artifact-storage
-  BuildSpecStorageBucketName: svc-cat-man-buildspec-storage
+  ArtifactStorageBucketName: artifact-storage
+  BuildSpecStorageBucketName: buildspec-storage
+  StateStorageBucketName: state-storage
+  StateLockTableName: state-lock-table
 tags: {}

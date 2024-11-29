@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: CloudFormation template for S3 buckets and CodePipeline with separate CodeBuild projects for development and production.
+Description: CloudFormation template for S3 buckets, CodePipeline, and Terraform state management with DynamoDB state locking.
 
 Parameters:
   ArtifactStorageBucketName:
@@ -10,12 +10,20 @@ Parameters:
     Type: String
     Description: Name of the S3 bucket for storing CodeBuild buildspec files.
 
+  StateStorageBucketName:
+    Type: String
+    Description: Name of the S3 bucket for storing Terraform state.
+
+  StateLockTableName:
+    Type: String
+    Description: Name of the DynamoDB table for Terraform state locking.
+
 Resources:
   # S3 Bucket for Artifact Storage
   ArtifactStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref ArtifactStorageBucketName
+    BucketName: !Sub ${AWS::StackName}-${ArtifactStorageBucketName}
       VersioningConfiguration:
         Status: Enabled
 
@@ -23,9 +31,41 @@ Resources:
   BuildSpecStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref BuildSpecStorageBucketName
+    BucketName: !Sub ${AWS::StackName}-${BuildSpecStorageBucketName}
       VersioningConfiguration:
         Status: Enabled
+
+  # S3 Bucket for Terraform State Storage
+  StateStorageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-${StateStorageBucketName}
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Status: Enabled
+            ExpirationInDays: 365 # Optional: Delete objects after 1 year
+      AccessControl: Private
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  # DynamoDB Table for State Locking
+  StateLockTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !!Sub ${AWS::StackName}-${StateLockTableName}
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      SSESpecification:
+        SSEEnabled: true
 
   # IAM Role for CodePipeline
   CodePipelineRole:
@@ -39,7 +79,7 @@ Resources:
               Service: codepipeline.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: CodePipelinePermissions
+        - PolicyName: !Sub ${AWS::StackName}${CodePipelinePermissions}
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -47,6 +87,7 @@ Resources:
                 Action:
                   - codebuild:*
                   - s3:*
+                  - dynamodb:*
                 Resource:
                   - "*"
 
@@ -62,7 +103,7 @@ Resources:
               Service: codebuild.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: CodeBuildPermissions
+        - PolicyName: !Sub ${AWS::StackName}${CodeBuildPermissions}
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -70,11 +111,18 @@ Resources:
                 Action:
                   - s3:GetObject
                   - s3:ListBucket
+                  - s3:PutObject
                 Resource:
-                  - !Sub arn:aws:s3:::${ArtifactStorageBucketName}
-                  - !Sub arn:aws:s3:::${ArtifactStorageBucketName}/*
-                  - !Sub arn:aws:s3:::${BuildSpecStorageBucketName}
-                  - !Sub arn:aws:s3:::${BuildSpecStorageBucketName}/*
+                  - !Sub arn:aws:s3:::${StateStorageBucketName}
+                  - !Sub arn:aws:s3:::${StateStorageBucketName}/*
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:UpdateItem
+                Resource:
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${StateLockTableName}
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
@@ -184,6 +232,14 @@ Outputs:
   BuildSpecStorageBucketName:
     Description: The name of the S3 bucket for storing buildspecs.
     Value: !Ref BuildSpecStorageBucket
+
+  StateStorageBucketName:
+    Description: The name of the S3 bucket for storing Terraform state.
+    Value: !Ref StateStorageBucket
+
+  StateLockTableName:
+    Description: The name of the DynamoDB table for Terraform state locking.
+    Value: !Ref StateLockTable
 
   CodePipelineName:
     Description: The name of the CodePipeline.
