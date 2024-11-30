@@ -26,6 +26,17 @@ resource "aws_iam_role_policy_attachment" "attach_launch_policies" {
   policy_arn = each.value
 }
 
+resource "aws_servicecatalog_constraint" "launch" {
+  description  = "Launch constraints "
+  portfolio_id = var.portfolio_id
+  product_id   = aws_servicecatalog_product.product.id
+  type         = "LAUNCH"
+
+  parameters = jsonencode({
+    "RoleArn" : aws_iam_role.product_launch_role.arn
+  })
+}
+
 resource "aws_servicecatalog_product" "product" {
   name  = "${var.environment}-${var.name}"
   owner = var.owner

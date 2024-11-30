@@ -11,4 +11,5 @@ portfolios:
         owner: platform
         type: CLOUD_FORMATION_TEMPLATE
         version: "0.1"
-        launch_constraint:arn:aws:iam::aws:policy/AmazonS3FullAccess
+        launch_constraint:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
