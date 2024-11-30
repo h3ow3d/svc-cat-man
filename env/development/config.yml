@@ -13,3 +13,7 @@ portfolios:
         owner: platform
         type: CLOUD_FORMATION_TEMPLATE
         version: "0"
+      - name: static-hosting
+        owner: platform
+        type: CLOUD_FORMATION_TEMPLATE
+        version: "0"
