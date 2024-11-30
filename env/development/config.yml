@@ -3,8 +3,6 @@ portfolios:
     description: |
       Portfolio for example products.
     provider_name: tech_org
-    usage_policy_arns:
-      - arn:aws:iam::aws:policy/AmazonS3FullAccess
     groups:
       - Administrators
       - Developers
@@ -12,8 +10,12 @@ portfolios:
       - name: example-bucket
         owner: platform
         type: CLOUD_FORMATION_TEMPLATE
-        version: "0"
+        version: "0.1"
+        launch_policy_arns:
+          - arn:aws:iam::aws:policy/AmazonS3FullAccess
       - name: static-hosting
         owner: platform
         type: CLOUD_FORMATION_TEMPLATE
-        version: "0"
+        version: "0.1"
+        launch_policy_arns:
+          - arn:aws:iam::aws:policy/AmazonS3FullAccess

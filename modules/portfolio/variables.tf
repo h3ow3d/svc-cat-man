@@ -2,10 +2,6 @@ variable "environment" {
   type = string
 }
 
-variable "policy_arns" {
-  type = list(string)
-}
-
 variable "name" {
   description = "The name of the portfolio"
   type        = string

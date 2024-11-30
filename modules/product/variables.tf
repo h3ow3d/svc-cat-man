@@ -33,3 +33,7 @@ variable "portfolio_id" {
 variable "portfolio_name" {
   type = string
 }
+
+variable "launch_policy_arns" {
+  type = list(string)
+}

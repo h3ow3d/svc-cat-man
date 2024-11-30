@@ -5,13 +5,14 @@ locals {
   products = flatten([
     for portfolio in local.portfolios : [
       for product in portfolio.products : {
-        portfolio_name = portfolio.name
-        portfolio_id   = module.portfolios[portfolio.name].portfolio_id
-        name           = product.name
-        description    = portfolio.description
-        owner          = product.owner
-        type           = product.type
-        version        = product.version
+        portfolio_name     = portfolio.name
+        portfolio_id       = module.portfolios[portfolio.name].portfolio_id
+        name               = product.name
+        description        = portfolio.description
+        owner              = product.owner
+        type               = product.type
+        version            = product.version
+        launch_policy_arns = product.launch_policy_arns
       }
     ]
   ])
@@ -42,7 +43,6 @@ module "portfolios" {
   name          = each.value.name
   description   = each.value.description
   provider_name = each.value.provider_name
-  policy_arns   = each.value.usage_policy_arns
 
   principal_arns = [
     for group in each.value.groups :
@@ -63,4 +63,5 @@ module "products" {
   product_template_storage_bucket_domain_name = aws_s3_bucket.product_template_storage.bucket_domain_name
   portfolio_id                                = each.value.portfolio_id
   portfolio_name                              = each.value.portfolio_name
+  launch_policy_arns                          = each.value.launch_policy_arns
 }

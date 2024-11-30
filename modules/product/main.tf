@@ -3,6 +3,29 @@ locals {
   product_template_full_path = "${path.cwd}/portfolios/${var.portfolio_name}/${local.product_template_filename}"
 }
 
+resource "aws_iam_role" "product_launch_role" {
+  name = "${var.environment}-${var.name}-launch-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = "AllowAssumeRoleServiceCatalog"
+        Principal = {
+          Service = "servicecatalog.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "attach_launch_policies" {
+  for_each   = toset(var.launch_policy_arns)
+  role       = aws_iam_role.product_launch_role.name
+  policy_arn = each.value
+}
+
 resource "aws_servicecatalog_product" "product" {
   name  = "${var.environment}-${var.name}"
   owner = var.owner
