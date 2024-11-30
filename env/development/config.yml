@@ -13,9 +13,4 @@ portfolios:
         version: "0.1"
         launch_policy_arns:
           - arn:aws:iam::aws:policy/AmazonS3FullAccess
-      - name: static-hosting
-        owner: platform
-        type: CLOUD_FORMATION_TEMPLATE
-        version: "0.1"
-        launch_policy_arns:
-          - arn:aws:iam::aws:policy/AmazonS3FullAccess
+          - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
