@@ -19,6 +19,93 @@ Parameters:
     Description: Name of the DynamoDB table for Terraform state locking.
 
 Resources:
+  ## AWS Service Management Connector IAM Resources
+  ### Sync User
+  ### Sync resources with Jira
+  SMSyncUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: SMSyncUser
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSServiceCatalogAdminReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
+        - arn:aws:iam::aws:policy/AWSConfigUserAccess
+        - arn:aws:iam::aws:policy/AWSSupportAccess
+
+  SMSyncUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref SMSyncUser
+
+  SMSyncUserAccessKeyIdParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /smsyncuser/access-key-id
+      Description: Access Key ID for SMSyncUser
+      Type: String
+      Value: !Ref SMSyncUserAccessKey
+      Tier: Standard
+
+  SMSyncUserSecretAccessKeyParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /smsyncuser/secret-access-key
+      Description: Secret Access Key for SMSyncUser
+      Type: String
+      Value: !GetAtt SMSyncUserAccessKey.SecretAccessKey
+      Tier: Standard
+
+  SMSyncUserPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: SMSyncUserPolicy
+      Users:
+        - !Ref SMSyncUser
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - cloudformation:RegisterType
+              - cloudformation:DescribeTypeRegistration
+              - cloudformation:DeregisterType
+              - config:PutResourceConfig
+            Resource: "*"
+
+  ### End User
+  ### Provision products from Jira
+  SMEndUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: SMEndUser
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSServiceCatalogEndUserFullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+  SMEndUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref SMEndUser
+
+  SMEndUserAccessKeyIdParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /smenduser/access-key-id
+      Description: Access Key ID for SMEndUser
+      Type: String
+      Value: !Ref SMEndUserAccessKey
+      Tier: Standard
+
+  SMEndUserSecretAccessKeyParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /smenduser/secret-access-key
+      Description: Secret Access Key for SMEndUser
+      Type: String
+      Value: !GetAtt SMEndUserAccessKey.SecretAccessKey
+      Tier: Standard
+
   # S3 Bucket for Artifact Storage
   ArtifactStorageBucket:
     Type: AWS::S3::Bucket
