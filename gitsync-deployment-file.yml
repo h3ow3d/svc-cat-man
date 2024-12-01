@@ -1,6 +1,6 @@
 template-file-path: templates/svc-cat-man-bootstrap.yml
 parameters:
-  EnableJSM: true
+  EnableJSM: false
   ArtifactStorageBucketName: artifact-storage
   BuildSpecStorageBucketName: buildspec-storage
   StateBucketName: terraform-state
