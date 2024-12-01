@@ -18,11 +18,24 @@ Parameters:
     Type: String
     Description: Name of the DynamoDB table for Terraform state locking.
 
+  EnableJSM:
+    Type: String
+    Default: "true"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: Set to "true" to enable JSM-related resources (SMSyncUser and SMEndUser), otherwise "false".
+
+Conditions:
+  EnableJSMCondition: !Equals
+  - !Ref EnableJSM
+  - true
+
 Resources:
   ## AWS Service Management Connector IAM Resources
-  ### Sync User
-  ### Sync resources with Jira
+  ### SMSyncUser Resources ###
   SMSyncUser:
+    Condition: EnableJSMCondition
     Type: AWS::IAM::User
     Properties:
       UserName: SMSyncUser
@@ -33,11 +46,13 @@ Resources:
         - arn:aws:iam::aws:policy/AWSSupportAccess
 
   SMSyncUserAccessKey:
+    Condition: EnableJSMCondition
     Type: AWS::IAM::AccessKey
     Properties:
       UserName: !Ref SMSyncUser
 
   SMSyncUserSecret:
+    Condition: EnableJSMCondition
     Type: AWS::SecretsManager::Secret
     Properties:
       Name: /smsyncuser/credentials
@@ -48,26 +63,9 @@ Resources:
           "SecretAccessKey": "${SMSyncUserAccessKey.SecretAccessKey}"
         }
 
-  SMSyncUserPolicy:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: SMSyncUserPolicy
-      Users:
-        - !Ref SMSyncUser
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Action:
-              - cloudformation:RegisterType
-              - cloudformation:DescribeTypeRegistration
-              - cloudformation:DeregisterType
-              - config:PutResourceConfig
-            Resource: "*"
-
-  ### End User
-  ### Provision products from Jira
+  ### SMEndUser Resources ###
   SMEndUser:
+    Condition: EnableJSMCondition
     Type: AWS::IAM::User
     Properties:
       UserName: SMEndUser
@@ -77,11 +75,13 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
 
   SMEndUserAccessKey:
+    Condition: EnableJSMCondition
     Type: AWS::IAM::AccessKey
     Properties:
       UserName: !Ref SMEndUser
 
   SMEndUserSecret:
+    Condition: EnableJSMCondition
     Type: AWS::SecretsManager::Secret
     Properties:
       Name: /smenduser/credentials
@@ -92,7 +92,7 @@ Resources:
           "SecretAccessKey": "${SMEndUserAccessKey.SecretAccessKey}"
         }
 
-  # S3 Bucket for Artifact Storage
+  ### Service Catalog Pipeline ###
   ArtifactStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -100,7 +100,6 @@ Resources:
       VersioningConfiguration:
         Status: Enabled
 
-  # S3 Bucket for BuildSpec Storage
   BuildSpecStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -143,7 +142,6 @@ Resources:
               - !Sub "${StateStorageBucket.Arn}"
               - !Sub "${StateStorageBucket.Arn}/*"
 
-  # DynamoDB Table for State Locking
   StateLockTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -158,7 +156,6 @@ Resources:
       SSESpecification:
         SSEEnabled: true
 
-  # IAM Role for CodePipeline
   CodePipelineRole:
     Type: AWS::IAM::Role
     Properties:
@@ -186,7 +183,6 @@ Resources:
                 Resource:
                   - "*"
 
-  # IAM Role for CodeBuild
   CodeBuildRole:
     Type: AWS::IAM::Role
     Properties:
@@ -213,7 +209,6 @@ Resources:
                 Resource:
                   - "*"
 
-  # CodeBuild Projects
   DeployDevelopmentCodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -242,7 +237,6 @@ Resources:
         Type: LINUX_CONTAINER
       ServiceRole: !GetAtt CodeBuildRole.Arn
 
-  # CodePipeline
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
