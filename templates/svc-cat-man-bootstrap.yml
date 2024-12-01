@@ -37,23 +37,16 @@ Resources:
     Properties:
       UserName: !Ref SMSyncUser
 
-  SMSyncUserAccessKeyIdParameter:
-    Type: AWS::SSM::Parameter
+  SMSyncUserSecret:
+    Type: AWS::SecretsManager::Secret
     Properties:
-      Name: /smsyncuser/access-key-id
-      Description: Access Key ID for SMSyncUser
-      Type: String
-      Value: !Ref SMSyncUserAccessKey
-      Tier: Standard
-
-  SMSyncUserSecretAccessKeyParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: /smsyncuser/secret-access-key
-      Description: Secret Access Key for SMSyncUser
-      Type: String
-      Value: !GetAtt SMSyncUserAccessKey.SecretAccessKey
-      Tier: Standard
+      Name: /smsyncuser/credentials
+      Description: SMSyncUser credentials stored securely in AWS Secrets Manager
+      SecretString: !Sub |
+        {
+          "AccessKeyId": "${SMSyncUserAccessKey}",
+          "SecretAccessKey": "${SMSyncUserAccessKey.SecretAccessKey}"
+        }
 
   SMSyncUserPolicy:
     Type: AWS::IAM::Policy
@@ -88,23 +81,16 @@ Resources:
     Properties:
       UserName: !Ref SMEndUser
 
-  SMEndUserAccessKeyIdParameter:
-    Type: AWS::SSM::Parameter
+  SMEndUserSecret:
+    Type: AWS::SecretsManager::Secret
     Properties:
-      Name: /smenduser/access-key-id
-      Description: Access Key ID for SMEndUser
-      Type: String
-      Value: !Ref SMEndUserAccessKey
-      Tier: Standard
-
-  SMEndUserSecretAccessKeyParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: /smenduser/secret-access-key
-      Description: Secret Access Key for SMEndUser
-      Type: String
-      Value: !GetAtt SMEndUserAccessKey.SecretAccessKey
-      Tier: Standard
+      Name: /smenduser/credentials
+      Description: SMEndUser credentials stored securely in AWS Secrets Manager
+      SecretString: !Sub |
+        {
+          "AccessKeyId": "${SMEndUserAccessKey}",
+          "SecretAccessKey": "${SMEndUserAccessKey.SecretAccessKey}"
+        }
 
   # S3 Bucket for Artifact Storage
   ArtifactStorageBucket:
