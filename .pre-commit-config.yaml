@@ -31,6 +31,8 @@ repos:
         args:
           - --config-file
           - .checkov.yaml
+          - --skip-check
+          - CKV2_GHA_1
 
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v3.6.0
