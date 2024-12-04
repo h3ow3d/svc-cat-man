@@ -1,29 +1,29 @@
 repos:
-  # Existing Terraform hooks
-  - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.96.2
-    hooks:
-      - id: terraform_fmt
-      - id: terraform_validate
-      - id: terraform_tflint
-      # - id: terraform_docs [TODO: enable this hook]
-
-  # Existing generic hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      # - id: check-yaml [TODO: enable this hook]
+      - id: check-yaml
       - id: check-json
+      - id: trailing-whitespace
+        args: ["--markdown-linebreak-ext=md"]
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: check-merge-conflict
+      - id: check-vcs-permalinks
+      - id: detect-private-key
+      - id: detect-aws-credentials
+        args: ["--allow-missing-credentials"]
+      - id: end-of-file-fixer
+      - id: pretty-format-json
+        args:
+          - --autofix
 
-  # Detect secrets
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.4.0
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: v8.21.2
     hooks:
-      - id: detect-secrets
+      - id: gitleaks
 
-  # Enforce Conventional Commits
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v3.6.0
     hooks:
@@ -31,9 +31,8 @@ repos:
         stages: [commit-msg]
         args: [--strict, --force-scope, feat, fix, chore, test, custom]
 
-  # CloudFormation Linter (cfn-lint)
   - repo: https://github.com/aws-cloudformation/cfn-lint
-    rev: v1.20.0  # Replace with the latest version as needed
+    rev: v1.20.2
     hooks:
       - id: cfn-lint
         files: ^(templates/|portfolios/).*\.(yaml|yml)$
