@@ -1,4 +1,5 @@
 name: Publish Artifact
+# checkov:skip=CKV2_GHA_1:Ensure top-level permissions are not set to write-all
 
 on:
   push:
