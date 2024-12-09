@@ -1,5 +1,9 @@
+---
 AWSTemplateFormatVersion: "2010-09-09"
-Description: CloudFormation template for S3 buckets, CodePipeline, and Terraform state management with DynamoDB state locking.
+Description: |
+  CloudFormation template for bootstrapping Service Catalog Manager, this stack
+  includes terraform state resources, codepipeline & jira service management
+  integration.
 
 Parameters:
   ArtifactStorageBucketName:
@@ -24,89 +28,19 @@ Parameters:
     AllowedValues:
       - "true"
       - "false"
-    Description: Set to "true" to enable JSM-related resources (SMSyncUser and SMEndUser), otherwise "false".
+    Description: |
+      Set to "true" to enable JSM-related resources (SMSyncUser and SMEndUser),
+      otherwise "false".
 
 Conditions:
-  EnableJSMCondition: !Equals
-  - !Ref EnableJSM
-  - true
+  EnableJSMCondition: !Equals # yamllint disable-line
+    - !Ref EnableJSM
+    - true
 
 Resources:
-  ## AWS Service Management Connector IAM Resources
-  ### SMSyncUser Resources ###
-  SMSyncUser:
-    Condition: EnableJSMCondition
-    Type: AWS::IAM::User
-    Properties:
-      UserName: SMSyncUser
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AWSServiceCatalogAdminReadOnlyAccess
-        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
-        - arn:aws:iam::aws:policy/AWSConfigUserAccess
-        - arn:aws:iam::aws:policy/AWSSupportAccess
-
-  SMSyncUserAccessKey:
-    Condition: EnableJSMCondition
-    Type: AWS::IAM::AccessKey
-    Properties:
-      UserName: !Ref SMSyncUser
-
-  SMSyncUserSecret:
-    Condition: EnableJSMCondition
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Name: /smsyncuser/credentials
-      Description: SMSyncUser credentials stored securely in AWS Secrets Manager
-      SecretString: !Sub |
-        {
-          "AccessKeyId": "${SMSyncUserAccessKey}",
-          "SecretAccessKey": "${SMSyncUserAccessKey.SecretAccessKey}"
-        }
-
-  ### SMEndUser Resources ###
-  SMEndUser:
-    Condition: EnableJSMCondition
-    Type: AWS::IAM::User
-    Properties:
-      UserName: SMEndUser
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AWSServiceCatalogEndUserFullAccess
-        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
-        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
-
-  SMEndUserAccessKey:
-    Condition: EnableJSMCondition
-    Type: AWS::IAM::AccessKey
-    Properties:
-      UserName: !Ref SMEndUser
-
-  SMEndUserSecret:
-    Condition: EnableJSMCondition
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Name: /smenduser/credentials
-      Description: SMEndUser credentials stored securely in AWS Secrets Manager
-      SecretString: !Sub |
-        {
-          "AccessKeyId": "${SMEndUserAccessKey}",
-          "SecretAccessKey": "${SMEndUserAccessKey.SecretAccessKey}"
-        }
-
-  ### Service Catalog Pipeline ###
-  ArtifactStorageBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub ${AWS::StackName}-${ArtifactStorageBucketName}
-      VersioningConfiguration:
-        Status: Enabled
-
-  BuildSpecStorageBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub ${AWS::StackName}-${BuildSpecStorageBucketName}
-      VersioningConfiguration:
-        Status: Enabled
-
+################################################################################
+## Terraform Resources
+################################################################################
   StateStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -155,6 +89,23 @@ Resources:
       BillingMode: PAY_PER_REQUEST
       SSESpecification:
         SSEEnabled: true
+
+################################################################################
+## Service Catalog Pipeline
+################################################################################
+  ArtifactStorageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-${ArtifactStorageBucketName}
+      VersioningConfiguration:
+        Status: Enabled
+
+  BuildSpecStorageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-${BuildSpecStorageBucketName}
+      VersioningConfiguration:
+        Status: Enabled
 
   CodePipelineRole:
     Type: AWS::IAM::Role
@@ -284,6 +235,7 @@ Resources:
               Configuration:
                 ProjectName: !Ref DeployDevelopmentCodeBuildProject
                 PrimarySource: BuildSpecArtifact
+                # yamllint disable-line rule:line-length
                 EnvironmentVariables: '[{"name":"ENVIRONMENT","value":"development","type":"PLAINTEXT"}]'
         - Name: DeployToProduction
           Actions:
@@ -299,7 +251,70 @@ Resources:
               Configuration:
                 ProjectName: !Ref DeployProductionCodeBuildProject
                 PrimarySource: BuildSpecArtifact
+                # yamllint disable-line rule:line-length
                 EnvironmentVariables: '[{"name":"ENVIRONMENT","value":"production","type":"PLAINTEXT"}]'
+
+################################################################################
+## AWS Service Management Connector IAM
+################################################################################
+  ### SMSyncUser Resources ###
+  SMSyncUser:
+    Condition: EnableJSMCondition
+    Type: AWS::IAM::User
+    Properties:
+      UserName: SMSyncUser
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSServiceCatalogAdminReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
+        - arn:aws:iam::aws:policy/AWSConfigUserAccess
+        - arn:aws:iam::aws:policy/AWSSupportAccess
+
+  SMSyncUserAccessKey:
+    Condition: EnableJSMCondition
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref SMSyncUser
+
+  SMSyncUserSecret:
+    Condition: EnableJSMCondition
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: /smsyncuser/credentials
+      Description: SMSyncUser credentials stored securely in AWS Secrets Manager
+      SecretString: !Sub |
+        {
+          "AccessKeyId": "${SMSyncUserAccessKey}",
+          "SecretAccessKey": "${SMSyncUserAccessKey.SecretAccessKey}"
+        }
+
+  ### SMEndUser Resources ###
+  SMEndUser:
+    Condition: EnableJSMCondition
+    Type: AWS::IAM::User
+    Properties:
+      UserName: SMEndUser
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSServiceCatalogEndUserFullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+  SMEndUserAccessKey:
+    Condition: EnableJSMCondition
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref SMEndUser
+
+  SMEndUserSecret:
+    Condition: EnableJSMCondition
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: /smenduser/credentials
+      Description: SMEndUser credentials stored securely in AWS Secrets Manager
+      SecretString: !Sub |
+        {
+          "AccessKeyId": "${SMEndUserAccessKey}",
+          "SecretAccessKey": "${SMEndUserAccessKey.SecretAccessKey}"
+        }
 
 Outputs:
   ArtifactStorageBucketName:

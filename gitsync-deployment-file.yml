@@ -1,4 +1,5 @@
-template-file-path: templates/svc-cat-man-bootstrap.yml
+---
+template-file-path: bootstrap/svc-cat-man-bootstrap.yml
 parameters:
   EnableJSM: false
   ArtifactStorageBucketName: artifact-storage
