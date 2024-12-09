@@ -236,7 +236,8 @@ Resources:
                 ProjectName: !Ref DeployDevelopmentCodeBuildProject
                 PrimarySource: BuildSpecArtifact
                 # yamllint disable-line rule:line-length
-                EnvironmentVariables: '[{"name":"ENVIRONMENT","value":"development","type":"PLAINTEXT"}]'
+                EnvironmentVariables: >-
+                  [{"name":"ENVIRONMENT","value":"development","type":"PLAINTEXT"}]
         - Name: DeployToProduction
           Actions:
             - Name: DeployProduction
@@ -252,7 +253,8 @@ Resources:
                 ProjectName: !Ref DeployProductionCodeBuildProject
                 PrimarySource: BuildSpecArtifact
                 # yamllint disable-line rule:line-length
-                EnvironmentVariables: '[{"name":"ENVIRONMENT","value":"production","type":"PLAINTEXT"}]'
+                EnvironmentVariables: >-
+                  [{"name":"ENVIRONMENT","value":"production","type":"PLAINTEXT"}]
 
 ################################################################################
 ## AWS Service Management Connector IAM
