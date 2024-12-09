@@ -27,5 +27,6 @@ jobs:
             foldername=$(basename "$dir")
             zip -j "buildspecs-zipped/${foldername}.zip" "${dir}buildspec.yml"
             echo "Uploading ${foldername}.zip to S3..."
-            aws s3 cp "buildspecs-zipped/${foldername}.zip" "s3://${{ secrets.BUILDSPEC_STORAGE_BUCKET }}/${foldername}.zip"
+            aws s3 cp "buildspecs-zipped/${foldername}.zip" \
+            "s3://${{ secrets.BUILDSPEC_STORAGE_BUCKET }}/${foldername}.zip"
           done

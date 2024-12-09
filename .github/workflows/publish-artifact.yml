@@ -26,4 +26,5 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 cp artifact.zip s3://${{ secrets.ARTIFACT_STORAGE_BUCKET }}/artifact.zip
+          aws s3 cp artifact.zip \
+          s3://${{ secrets.ARTIFACT_STORAGE_BUCKET }}/artifact.zip
