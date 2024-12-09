@@ -13,3 +13,4 @@ portfolios:
         version: "0.1"
         launch_constraint:
           - arn:aws:iam::aws:policy/AmazonS3FullAccess
+          - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
