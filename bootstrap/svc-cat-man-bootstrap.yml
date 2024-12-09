@@ -33,7 +33,7 @@ Parameters:
       otherwise "false".
 
 Conditions:
-  EnableJSMCondition: !Equals # yamllint disable-line
+  EnableJSMCondition: !Equals
     - !Ref EnableJSM
     - true
 
