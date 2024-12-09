@@ -1,6 +1,6 @@
 locals {
   product_template_filename  = "${var.name}.yml"
-  product_template_full_path = "${path.cwd}/service/${var.portfolio_name}/${local.product_template_filename}"
+  product_template_full_path = "${path.cwd}/services/${var.portfolio_name}/${local.product_template_filename}"
 }
 
 resource "aws_iam_role" "product_launch_role" {
