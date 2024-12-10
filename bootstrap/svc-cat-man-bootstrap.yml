@@ -216,7 +216,7 @@ Resources:
                 S3ObjectKey: "deploy.zip"
         - Name: Deploy
           Actions:
-            - Name: DeployDevelopment
+            - Name: Deploy
               ActionTypeId:
                 Category: Build
                 Owner: AWS
@@ -226,7 +226,7 @@ Resources:
                 - Name: SourceArtifact
                 - Name: BuildSpecArtifact
               Configuration:
-                ProjectName: !Ref DeployDevelopmentCodeBuildProject
+                ProjectName: !Ref DeployCodeBuildProject
                 PrimarySource: BuildSpecArtifact
 
 Outputs:
