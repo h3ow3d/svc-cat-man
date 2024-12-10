@@ -24,7 +24,7 @@ jobs:
 
       - name: Package project
         run: |
-          zip -r artifact.zip ./terraform/*
+          cd terraform; zip -r ../artifact.zip *
 
       - name: Upload to S3
         run: |
