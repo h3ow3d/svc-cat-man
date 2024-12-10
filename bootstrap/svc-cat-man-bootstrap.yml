@@ -175,9 +175,6 @@ Resources:
         Image: hashicorp/terraform:1.10
         Type: LINUX_CONTAINER
         EnvironmentVariables:
-          - Name: ENVIRONMENT
-            Value: development
-            Type: PLAINTEXT
           - Name: GITHUB_TOKEN
             # yamllint disable-line rule:line-length
             Value: !Sub "{{resolve:secretsmanager:${GitHubSecretARN}:GITHUB_TOKEN}}"
@@ -197,9 +194,6 @@ Resources:
         Image: hashicorp/terraform:1.10
         Type: LINUX_CONTAINER
         EnvironmentVariables:
-          - Name: ENVIRONMENT
-            Value: production
-            Type: PLAINTEXT
           - Name: GITHUB_TOKEN
             # yamllint disable-line rule:line-length
             Value: !Sub "{{resolve:secretsmanager:${GitHubSecretARN}:GITHUB_TOKEN}}"
