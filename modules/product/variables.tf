@@ -14,10 +14,6 @@ variable "product_version" {
   type = string
 }
 
-variable "product_template_storage_bucket_id" {
-  type = string
-}
-
 variable "product_template_storage_bucket_domain_name" {
   type = string
 }
@@ -36,4 +32,8 @@ variable "launch_policy_arns" {
 
 variable "environments" {
   type = list
+}
+
+variable "base_template_path" {
+  type = string
 }

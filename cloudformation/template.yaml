@@ -1,0 +1,9 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  A minimal CloudFormation template that does nothing. Use this as a base
+  template.
+
+Resources:
+  WaitConditionHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+    Properties: {}

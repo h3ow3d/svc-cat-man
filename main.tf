@@ -1,6 +1,7 @@
 locals {
   config     = yamldecode(file("${path.module}/config.yml"))
   portfolios = local.config.portfolios
+  base_product_template_path = "cloudformation/template.yaml"
 
   products = flatten([
     for portfolio in local.portfolios : [
@@ -41,6 +42,14 @@ resource "aws_s3_bucket" "product_template_storage" {
   }
 }
 
+resource "aws_s3_object" "base_product_template" {
+  bucket = aws_s3_bucket.product_template_storage.id
+  key    = "template.yaml"
+  source = local.base_product_template_path
+
+  etag = filemd5(local.base_product_template_path)
+}
+
 module "portfolios" {
   for_each = { for portfolio in local.portfolios : portfolio.name => portfolio }
 
@@ -64,9 +73,9 @@ module "products" {
   environments                                = var.environments
   type                                        = each.value.type
   product_version                             = each.value.version
-  product_template_storage_bucket_id          = aws_s3_bucket.product_template_storage.id
   product_template_storage_bucket_domain_name = aws_s3_bucket.product_template_storage.bucket_domain_name
   portfolio_id                                = each.value.portfolio_id
   portfolio_name                              = each.value.portfolio_name
   launch_policy_arns                          = each.value.launch_policy_arns
+  base_template_path = local.base_product_template_path
 }
