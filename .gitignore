@@ -4,6 +4,9 @@
 
 .DS_Store
 
+# Terraform vars file
+terraform.local.tfvars
+
 # Local .terraform directories
 **/.terraform/*
 
