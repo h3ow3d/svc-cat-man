@@ -60,3 +60,13 @@ resource "aws_servicecatalog_product_portfolio_association" "association" {
   portfolio_id = var.portfolio_id
   product_id   = aws_servicecatalog_product.product.id
 }
+
+
+resource "github_repository" "product_repository" {
+  # checkov:skip=CKV2_GIT_1:Ensure each Repository has branch protection associated
+  name        = local.product_name
+  description = "My awesome codebase"
+
+  visibility = "private"
+  vulnerability_alerts = true
+}
