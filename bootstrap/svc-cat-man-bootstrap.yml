@@ -179,8 +179,8 @@ Resources:
             Value: development
             Type: PLAINTEXT
           - Name: GITHUB_TOKEN
-            Value:
-              !Sub "{{resolve:secretsmanager:${GitHubSecretARN}:GITHUB_TOKEN}}"
+            # yamllint disable-line rule:line-length
+            Value: !Sub "{{resolve:secretsmanager:${GitHubSecretARN}:GITHUB_TOKEN}}"
             Type: SECRETS_MANAGER
       ServiceRole: !GetAtt CodeBuildRole.Arn
 
@@ -201,8 +201,8 @@ Resources:
             Value: production
             Type: PLAINTEXT
           - Name: GITHUB_TOKEN
-            Value:
-              !Sub "{{resolve:secretsmanager:${GitHubSecretARN}:GITHUB_TOKEN}}"
+            # yamllint disable-line rule:line-length
+            Value: !Sub "{{resolve:secretsmanager:${GitHubSecretARN}:GITHUB_TOKEN}}"
             Type: SECRETS_MANAGER
       ServiceRole: !GetAtt CodeBuildRole.Arn
 
