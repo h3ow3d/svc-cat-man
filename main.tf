@@ -72,3 +72,21 @@ module "products" {
   portfolio_name                              = each.value.portfolio_name
   launch_policy_arns                          = each.value.launch_policy_arns
 }
+
+
+data "github_repository" "example" {
+  full_name = "h3ow3d/svc-cat-man"
+}
+
+output "github_repository" {
+  value       = "${data.github_repository.example.repo_id}"
+}
+
+resource "github_repository" "example" {
+  # checkov:skip=CKV2_GIT_1:Ensure each Repository has branch protection associated
+  name        = "${var.environment}-h3ow3d"
+  description = "My awesome codebase"
+
+  visibility = "private"
+  vulnerability_alerts = true
+}

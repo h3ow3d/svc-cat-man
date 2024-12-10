@@ -38,7 +38,7 @@ resource "aws_servicecatalog_constraint" "launch" {
 }
 
 resource "aws_servicecatalog_product" "product" {
-  name  = "${var.environment}-${var.name}"
+  name  = local.product_name
   owner = var.owner
   type  = var.type
 

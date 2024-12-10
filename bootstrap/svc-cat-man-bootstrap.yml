@@ -1,9 +1,8 @@
----
 AWSTemplateFormatVersion: "2010-09-09"
 Description: |
-  CloudFormation template for bootstrapping Service Catalog Manager, this stack
-  includes terraform state resources, codepipeline & jira service management
-  integration.
+  CloudFormation template for bootstrapping Service Catalog Manager, including
+  Terraform state resources, CodePipeline, CodeBuild, and integration with
+  GitHub.
 
 Parameters:
   ArtifactStorageBucketName:
@@ -21,6 +20,11 @@ Parameters:
   StateLockTableName:
     Type: String
     Description: Name of the DynamoDB table for Terraform state locking.
+
+  GitHubSecretARN:
+    Type: String
+    Description: |
+      ARN of the manually managed GitHub token secret in AWS Secrets Manager.
 
   EnableJSM:
     Type: String
@@ -41,6 +45,7 @@ Resources:
 ################################################################################
 ## Terraform Resources
 ################################################################################
+
   StateStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -63,7 +68,6 @@ Resources:
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
-          # Allow Terraform to manage state files
           - Effect: Allow
             Principal:
               AWS: !GetAtt CodeBuildRole.Arn
@@ -93,6 +97,7 @@ Resources:
 ################################################################################
 ## Service Catalog Pipeline
 ################################################################################
+
   ArtifactStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -116,10 +121,6 @@ Resources:
           - Effect: Allow
             Principal:
               Service: codepipeline.amazonaws.com
-            Action: sts:AssumeRole
-          - Effect: Allow
-            Principal:
-              AWS: arn:aws:iam::575108940418:user/admin
             Action: sts:AssumeRole
       Policies:
         - PolicyName: !Sub ${AWS::StackName}CodePipelinePermissions
@@ -157,8 +158,9 @@ Resources:
                   - servicecatalog:*
                   - iam:*
                   - cloudformation:*
+                  - secretsmanager:GetSecretValue
                 Resource:
-                  - "*"
+                  - !Ref GitHubSecretARN
 
   DeployDevelopmentCodeBuildProject:
     Type: AWS::CodeBuild::Project
@@ -172,6 +174,14 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: hashicorp/terraform:1.10
         Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Name: ENVIRONMENT
+            Value: development
+            Type: PLAINTEXT
+          - Name: GITHUB_TOKEN
+            Value:
+              !Sub "{{resolve:secretsmanager:${GitHubSecretARN}:GITHUB_TOKEN}}"
+            Type: SECRETS_MANAGER
       ServiceRole: !GetAtt CodeBuildRole.Arn
 
   DeployProductionCodeBuildProject:
@@ -186,6 +196,14 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: hashicorp/terraform:1.10
         Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Name: ENVIRONMENT
+            Value: production
+            Type: PLAINTEXT
+          - Name: GITHUB_TOKEN
+            Value:
+              !Sub "{{resolve:secretsmanager:${GitHubSecretARN}:GITHUB_TOKEN}}"
+            Type: SECRETS_MANAGER
       ServiceRole: !GetAtt CodeBuildRole.Arn
 
   CodePipeline:
@@ -234,10 +252,6 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployDevelopmentCodeBuildProject
-                PrimarySource: BuildSpecArtifact
-                # yamllint disable-line rule:line-length
-                EnvironmentVariables: >-
-                  [{"name":"ENVIRONMENT","value":"development","type":"PLAINTEXT"}]
         - Name: DeployToProduction
           Actions:
             - Name: DeployProduction
@@ -251,72 +265,6 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployProductionCodeBuildProject
-                PrimarySource: BuildSpecArtifact
-                # yamllint disable-line rule:line-length
-                EnvironmentVariables: >-
-                  [{"name":"ENVIRONMENT","value":"production","type":"PLAINTEXT"}]
-
-################################################################################
-## AWS Service Management Connector IAM
-################################################################################
-  ### SMSyncUser Resources ###
-  SMSyncUser:
-    Condition: EnableJSMCondition
-    Type: AWS::IAM::User
-    Properties:
-      UserName: SMSyncUser
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AWSServiceCatalogAdminReadOnlyAccess
-        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
-        - arn:aws:iam::aws:policy/AWSConfigUserAccess
-        - arn:aws:iam::aws:policy/AWSSupportAccess
-
-  SMSyncUserAccessKey:
-    Condition: EnableJSMCondition
-    Type: AWS::IAM::AccessKey
-    Properties:
-      UserName: !Ref SMSyncUser
-
-  SMSyncUserSecret:
-    Condition: EnableJSMCondition
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Name: /smsyncuser/credentials
-      Description: SMSyncUser credentials stored securely in AWS Secrets Manager
-      SecretString: !Sub |
-        {
-          "AccessKeyId": "${SMSyncUserAccessKey}",
-          "SecretAccessKey": "${SMSyncUserAccessKey.SecretAccessKey}"
-        }
-
-  ### SMEndUser Resources ###
-  SMEndUser:
-    Condition: EnableJSMCondition
-    Type: AWS::IAM::User
-    Properties:
-      UserName: SMEndUser
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AWSServiceCatalogEndUserFullAccess
-        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
-        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
-
-  SMEndUserAccessKey:
-    Condition: EnableJSMCondition
-    Type: AWS::IAM::AccessKey
-    Properties:
-      UserName: !Ref SMEndUser
-
-  SMEndUserSecret:
-    Condition: EnableJSMCondition
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Name: /smenduser/credentials
-      Description: SMEndUser credentials stored securely in AWS Secrets Manager
-      SecretString: !Sub |
-        {
-          "AccessKeyId": "${SMEndUserAccessKey}",
-          "SecretAccessKey": "${SMEndUserAccessKey.SecretAccessKey}"
-        }
 
 Outputs:
   ArtifactStorageBucketName:

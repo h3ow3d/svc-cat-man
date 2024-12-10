@@ -9,7 +9,7 @@ variable "environment" {
   default = "development"
 }
 
-variable github_organisation {
+variable github_owner {
   type        = string
   default     = "h3ow3d"
 }

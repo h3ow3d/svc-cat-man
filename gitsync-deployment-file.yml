@@ -6,4 +6,6 @@ parameters:
   BuildSpecStorageBucketName: buildspec-storage
   StateBucketName: terraform-state
   StateLockTableName: state-lock-table
+  GitHubSecretARN:
+    arn:aws:secretsmanager:eu-west-2:575108940418:secret:github_token-MquYHN
 tags: {}
