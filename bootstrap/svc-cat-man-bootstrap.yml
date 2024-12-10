@@ -236,6 +236,7 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployDevelopmentCodeBuildProject
+                PrimarySource: BuildSpecArtifact
                 # yamllint disable-line rule:line-length
                 EnvironmentVariables: >-
                   [{"name":"ENVIRONMENT","value":"development","type":"PLAINTEXT"}]
@@ -252,6 +253,7 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployProductionCodeBuildProject
+                PrimarySource: BuildSpecArtifact
                 # yamllint disable-line rule:line-length
                 EnvironmentVariables: >-
                   [{"name":"ENVIRONMENT","value":"production","type":"PLAINTEXT"}]
