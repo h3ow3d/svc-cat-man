@@ -1,5 +1,10 @@
 version: 0.2
 
+
+env:
+  secrets-manager:
+    # yamllint disable-line rule:line-length
+    GITHUB_TOKEN: "arn:aws:secretsmanager:eu-west-2:575108940418:secret:github_token-MquYHN"
 phases:
   build:
     commands:
