@@ -236,6 +236,9 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployDevelopmentCodeBuildProject
+                # yamllint disable-line rule:line-length
+                EnvironmentVariables: >-
+                  [{"name":"ENVIRONMENT","value":"development","type":"PLAINTEXT"}]
         - Name: DeployToProduction
           Actions:
             - Name: DeployProduction
@@ -249,6 +252,9 @@ Resources:
                 - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployProductionCodeBuildProject
+                # yamllint disable-line rule:line-length
+                EnvironmentVariables: >-
+                  [{"name":"ENVIRONMENT","value":"production","type":"PLAINTEXT"}]
 
 Outputs:
   ArtifactStorageBucketName:
