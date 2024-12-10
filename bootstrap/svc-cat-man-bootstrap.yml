@@ -152,6 +152,11 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
+                  - secretsmanager:*
+                Resource:
+                  - !Ref GitHubSecretARN
+              - Effect: Allow
+                Action:
                   - logs:*
                   - s3:*
                   - dynamodb:*
@@ -160,7 +165,7 @@ Resources:
                   - cloudformation:*
                   - secretsmanager:*"
                 Resource:
-                  - !Ref GitHubSecretARN
+                  - "*"
 
   DeployDevelopmentCodeBuildProject:
     Type: AWS::CodeBuild::Project
