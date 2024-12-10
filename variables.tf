@@ -4,7 +4,7 @@ variable "region" {
   description = "AWS region."
 }
 
-variable "environment" {
-  type = string
-  default = "development"
+variable "environments" {
+  type = list
+  default = ["development", "production"]
 }

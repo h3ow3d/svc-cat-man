@@ -1,7 +1,3 @@
-variable "environment" {
-  type = string
-}
-
 variable "name" {
   type = string
 }
@@ -36,4 +32,8 @@ variable "portfolio_name" {
 
 variable "launch_policy_arns" {
   type = list(string)
+}
+
+variable "environments" {
+  type = list
 }

@@ -1,5 +1,5 @@
 locals {
-  config     = yamldecode(file("${path.module}/env/${var.environment}/config.yml"))
+  config     = yamldecode(file("${path.module}/config.yml"))
   portfolios = local.config.portfolios
 
   products = flatten([
@@ -33,12 +33,11 @@ resource "aws_s3_bucket" "product_template_storage" {
   # checkov:skip=CKV_AWS_145:Ensure that S3 buckets are encrypted with KMS by default
   # checkov:skip=CKV_AWS_144:Ensure that S3 bucket has cross-region replication enabled
   # checkov:skip=CKV_AWS_21:Ensure all data stored in the S3 bucket have versioning enabled
-  bucket        = lower("${var.environment}-product-template-storage-${random_string.suffix.result}")
+  bucket        = lower("product-template-storage-${random_string.suffix.result}")
   force_destroy = true
 
   tags = {
     Name        = "Storage for Service Catalog Product templates."
-    Environment = var.environment
   }
 }
 
@@ -46,7 +45,6 @@ module "portfolios" {
   for_each = { for portfolio in local.portfolios : portfolio.name => portfolio }
 
   source        = "./modules/portfolio"
-  environment   = var.environment
   name          = each.value.name
   description   = each.value.description
   provider_name = each.value.provider_name
@@ -61,9 +59,9 @@ module "products" {
   for_each = { for product in local.products : product.name => product }
 
   source                                      = "./modules/product"
-  environment                                 = var.environment
   name                                        = each.value.name
   owner                                       = each.value.owner
+  environments                                = var.environments
   type                                        = each.value.type
   product_version                             = each.value.version
   product_template_storage_bucket_id          = aws_s3_bucket.product_template_storage.id

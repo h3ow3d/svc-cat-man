@@ -1,7 +1,3 @@
-variable "environment" {
-  type = string
-}
-
 variable "name" {
   description = "The name of the portfolio"
   type        = string

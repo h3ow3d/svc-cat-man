@@ -4,7 +4,7 @@ locals {
 }
 
 resource "aws_iam_role" "product_launch_role" {
-  name = "${var.environment}-${var.name}-launch-role"
+  name = "${var.name}-launch-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -38,7 +38,7 @@ resource "aws_servicecatalog_constraint" "launch" {
 }
 
 resource "aws_servicecatalog_product" "product" {
-  name  = local.product_name
+  name  = var.name
   owner = var.owner
   type  = var.type
 
@@ -64,9 +64,15 @@ resource "aws_servicecatalog_product_portfolio_association" "association" {
 
 resource "github_repository" "product_repository" {
   # checkov:skip=CKV2_GIT_1:Ensure each Repository has branch protection associated
-  name        = local.product_name
-  description = "My awesome codebase"
+  name        = var.name
+  description = "Service Catalog product: ${var.name}"
 
   visibility = "private"
   vulnerability_alerts = true
+}
+
+resource "github_branch" "product_branch" {
+  for_each = toset(var.environments)
+  repository = github_repository.product_repository.name
+  branch     = each.value
 }
