@@ -158,7 +158,7 @@ Resources:
                   - servicecatalog:*
                   - iam:*
                   - cloudformation:*
-                  - secretsmanager:GetSecretValue
+                  - secretsmanager:*
                 Resource:
                   - !Ref GitHubSecretARN
 
