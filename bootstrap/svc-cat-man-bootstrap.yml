@@ -152,7 +152,13 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - "*"
+                  - logs:*
+                  - s3:*
+                  - dynamodb:*
+                  - servicecatalog:*
+                  - iam:*
+                  - cloudformation:*
+                  - secretsmanager:*"
                 Resource:
                   - !Ref GitHubSecretARN
 
