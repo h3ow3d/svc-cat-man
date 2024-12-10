@@ -167,24 +167,10 @@ Resources:
                 Resource:
                   - "*"
 
-  DeployDevelopmentCodeBuildProject:
+  DeployCodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: deploy-development
-      Source:
-        Type: CODEPIPELINE
-      Artifacts:
-        Type: CODEPIPELINE
-      Environment:
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: hashicorp/terraform:1.10
-        Type: LINUX_CONTAINER
-      ServiceRole: !GetAtt CodeBuildRole.Arn
-
-  DeployProductionCodeBuildProject:
-    Type: AWS::CodeBuild::Project
-    Properties:
-      Name: deploy-production
+      Name: deploy
       Source:
         Type: CODEPIPELINE
       Artifacts:
@@ -228,7 +214,7 @@ Resources:
               Configuration:
                 S3Bucket: !Ref BuildSpecStorageBucket
                 S3ObjectKey: "deploy.zip"
-        - Name: DeployToDevelopment
+        - Name: Deploy
           Actions:
             - Name: DeployDevelopment
               ActionTypeId:
@@ -242,26 +228,6 @@ Resources:
               Configuration:
                 ProjectName: !Ref DeployDevelopmentCodeBuildProject
                 PrimarySource: BuildSpecArtifact
-                # yamllint disable-line rule:line-length
-                EnvironmentVariables: >-
-                  [{"name":"ENVIRONMENT","value":"development","type":"PLAINTEXT"}]
-        - Name: DeployToProduction
-          Actions:
-            - Name: DeployProduction
-              ActionTypeId:
-                Category: Build
-                Owner: AWS
-                Provider: CodeBuild
-                Version: "1"
-              InputArtifacts:
-                - Name: SourceArtifact
-                - Name: BuildSpecArtifact
-              Configuration:
-                ProjectName: !Ref DeployProductionCodeBuildProject
-                PrimarySource: BuildSpecArtifact
-                # yamllint disable-line rule:line-length
-                EnvironmentVariables: >-
-                  [{"name":"ENVIRONMENT","value":"production","type":"PLAINTEXT"}]
 
 Outputs:
   ArtifactStorageBucketName:
