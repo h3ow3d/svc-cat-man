@@ -12,14 +12,12 @@ phases:
       - cd $CODEBUILD_SRC_DIR_SourceArtifact
       - echo "Initializing Terraform..."
       - terraform init
-      - echo "Selecting workspace..."
-      - terraform workspace select -or-create=true $ENVIRONMENT
       - echo "Validating Terraform..."
       - terraform validate
       - echo "Planning Terraform..."
-      - TF_VAR_environment="${ENVIRONMENT}" terraform plan
+      - terraform plan
       - echo "Applying Terraform..."
-      - TF_VAR_environment="${ENVIRONMENT}" terraform apply -auto-approve
+      - terraform apply -auto-approve
 
 artifacts:
   files:
