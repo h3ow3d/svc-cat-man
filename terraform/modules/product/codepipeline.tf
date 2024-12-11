@@ -2,8 +2,10 @@ resource "aws_codepipeline" "product_pipeline" {
   name     = var.name
   role_arn = aws_iam_role.codepipeline_role.arn
 
+  pipeline_type = "v2"
+
   artifact_store {
-    location = aws_s3_bucket.artifact_storage.id
+    location = aws_s3_bucket.artifact_storage.bucket
     type     = "S3"
 
     encryption_key {
@@ -24,9 +26,35 @@ resource "aws_codepipeline" "product_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = var.codeconnection_arn
+        ConnectionArn    = var.github_connection_arn
         FullRepositoryId = github_repository.product_repository.full_name
-        BranchName       = "development"
+        BranchName       = "default"
+        OutputArtifactFormat = "CODEPIPELINE"
+      }
+
+      configuration_filters = [
+        {
+          Type       = "FilePath"
+          MatchEquals = "template.yaml"
+        }
+      ]
+    }
+  }
+
+  stage {
+    name = "Build"
+
+    action {
+      name             = "Build"
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source_output"]
+      output_artifacts = ["build_output"]
+      version          = "1"
+
+      configuration = {
+        ProjectName = aws_codebuild_project.build_project.name
       }
     }
   }
@@ -39,19 +67,20 @@ resource "aws_codepipeline" "product_pipeline" {
       category        = "Deploy"
       owner           = "AWS"
       provider        = "ServiceCatalog"
-      input_artifacts = ["source_output"]
+      input_artifacts = ["build_output"]
       version         = "1"
 
       configuration = {
         ActionMode     = "REPLACE_ON_FAILURE"
         Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
-        OutputFileName = "template.yaml"
+        OutputFileName = "CreateStackOutput.json"
         StackName      = var.name
-        TemplatePath   = "source_output::template.yaml"
+        TemplatePath   = "build_output::template.yaml"
       }
     }
   }
 }
+
 
 resource "aws_s3_bucket" "artifact_storage" {
   # checkov:skip=CKV2_AWS_62:Ensure S3 buckets should have event notifications enabled
