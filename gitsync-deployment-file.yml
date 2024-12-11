@@ -8,4 +8,6 @@ parameters:
   StateLockTableName: state-lock-table
   # yamllint disable-line rule:line-length
   GitHubSecretARN: arn:aws:secretsmanager:eu-west-2:575108940418:secret:github_token-MquYHN
+  # yamllint disable-line rule:line-length
+  CodeConnectionARN: arn:aws:codeconnections:eu-west-2:575108940418:connection/7b810aeb-23af-4a88-9a51-b39d72cc1064
 tags: {}

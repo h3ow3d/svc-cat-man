@@ -26,6 +26,11 @@ Parameters:
     Description: |
       ARN of the manually managed GitHub token secret in AWS Secrets Manager.
 
+  CodeConnectionARN:
+    Type: String
+    Description: |
+      ARN of the manually managed Codeconnection.
+
   EnableJSM:
     Type: String
     Default: "true"
@@ -155,6 +160,11 @@ Resources:
                   - secretsmanager:*
                 Resource:
                   - !Ref GitHubSecretARN
+              - Effect: Allow
+                Action:
+                  - codestar-connections:*
+                Resource:
+                  - !Ref CodeConnectionARN
               - Effect: Allow
                 Action:
                   - logs:*
