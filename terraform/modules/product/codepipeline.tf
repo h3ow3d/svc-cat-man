@@ -63,7 +63,6 @@ resource "aws_codepipeline" "product_pipeline" {
       configuration = {
         ActionMode     = "REPLACE_ON_FAILURE"
         Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
-        OutputFileName = "CreateStackOutput.json"
         StackName      = var.name
         TemplateFilePath   = "source_output::template.yaml"
       }
