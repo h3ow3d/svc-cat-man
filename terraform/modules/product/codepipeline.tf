@@ -61,9 +61,6 @@ resource "aws_codepipeline" "product_pipeline" {
       version         = "1"
 
       configuration = {
-        ActionMode     = "REPLACE_ON_FAILURE"
-        Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
-        StackName      = var.name
         TemplateFilePath   = "source_output::template.yaml"
       }
     }
