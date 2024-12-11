@@ -37,3 +37,7 @@ variable "environments" {
 variable "base_template_path" {
   type = string
 }
+
+variable "codeconnection_arn" {
+  type = string
+}

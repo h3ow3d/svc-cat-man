@@ -1,13 +1,9 @@
-data "aws_ssm_parameter" "codeconnection_arn" {
-  name = "codeconnection_arn"
-}
-
 resource "aws_codepipeline" "product_pipeline" {
   name     = var.name
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
-    location = aws_s3_bucket.codepipeline_bucket.bucket
+    location = aws_s3_bucket.artifact_storage.id
     type     = "S3"
 
     encryption_key {
@@ -28,7 +24,7 @@ resource "aws_codepipeline" "product_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = aws_ssm_parameter.codeconnection_arn.arn
+        ConnectionArn    = var.codeconnection_arn
         FullRepositoryId = github_repository.product_repository.full_name
         BranchName       = "development"
       }
@@ -57,7 +53,7 @@ resource "aws_codepipeline" "product_pipeline" {
   }
 }
 
-resource "aws_s3_bucket" "codepipeline_bucket" {
+resource "aws_s3_bucket" "artifact_storage" {
   # checkov:skip=CKV2_AWS_62:Ensure S3 buckets should have event notifications enabled
   # checkov:skip=CKV_AWS_18:Ensure the S3 bucket has access logging enabled
   # checkov:skip=CKV2_AWS_61:Ensure that an S3 bucket has a lifecycle configuration
@@ -67,8 +63,8 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket = "${var.name}-artifact-storage"
 }
 
-resource "aws_s3_bucket_public_access_block" "codepipeline_bucket_pab" {
-  bucket = aws_s3_bucket.codepipeline_bucket.id
+resource "aws_s3_bucket_public_access_block" "artifact_storage_pab" {
+  bucket = aws_s3_bucket.artifact_storage.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -109,15 +105,15 @@ data "aws_iam_policy_document" "codepipeline_policy" {
     ]
 
     resources = [
-      aws_s3_bucket.codepipeline_bucket.arn,
-      "${aws_s3_bucket.codepipeline_bucket.arn}/*"
+      aws_s3_bucket.artifact_storage.arn,
+      "${aws_s3_bucket.artifact_storage.arn}/*"
     ]
   }
 
   statement {
     effect    = "Allow"
     actions   = ["codestar-connections:UseConnection"]
-    resources = [aws_codestarconnections_connection.example.arn]
+    resources = [var.codeconnection_arn]
   }
 
   statement {

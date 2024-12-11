@@ -21,6 +21,10 @@ locals {
 
 data "aws_caller_identity" "current" {}
 
+data "aws_ssm_parameter" "codeconnection_arn" {
+  name = "codeconnection_arn"
+}
+
 resource "random_string" "suffix" {
   length  = 6
   special = false
@@ -78,4 +82,5 @@ module "products" {
   portfolio_name                              = each.value.portfolio_name
   launch_policy_arns                          = each.value.launch_policy_arns
   base_template_path = local.base_product_template_path
+  codeconnection_arn = data.aws_ssm_parameter.codeconnection_arn.value
 }
