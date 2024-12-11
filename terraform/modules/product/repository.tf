@@ -3,7 +3,7 @@ resource "github_repository" "product_repository" {
   name        = var.name
   description = "Service Catalog product: ${var.name}"
 
-  visibility = "private"
+  visibility           = "private"
   vulnerability_alerts = true
 }
 
@@ -15,7 +15,7 @@ resource "github_repository_file" "readme" {
 }
 
 resource "github_repository_file" "base_template" {
-  for_each = toset(var.environments)
+  for_each            = toset(var.environments)
   repository          = github_repository.product_repository.name
   branch              = each.value
   file                = "template.yaml"

@@ -1,4 +1,4 @@
-output repository_uri {
+output "repository_uri" {
   value       = ""
   sensitive   = true
   description = "description"

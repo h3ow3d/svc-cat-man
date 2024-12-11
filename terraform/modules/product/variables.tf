@@ -22,16 +22,12 @@ variable "portfolio_id" {
   type = string
 }
 
-variable "portfolio_name" {
-  type = string
-}
-
 variable "launch_policy_arns" {
   type = list(string)
 }
 
 variable "environments" {
-  type = list
+  type = list(any)
 }
 
 variable "base_template_path" {

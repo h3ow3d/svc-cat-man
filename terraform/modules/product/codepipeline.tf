@@ -41,9 +41,9 @@ resource "aws_codepipeline" "product_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = var.github_connection_arn
-        FullRepositoryId = github_repository.product_repository.full_name
-        BranchName       = "default"
+        ConnectionArn        = var.github_connection_arn
+        FullRepositoryId     = github_repository.product_repository.full_name
+        BranchName           = "default"
         OutputArtifactFormat = "CODEPIPELINE"
       }
     }
@@ -61,7 +61,8 @@ resource "aws_codepipeline" "product_pipeline" {
       version         = "1"
 
       configuration = {
-        TemplateFilePath   = "source_output::template.yaml"
+        ProductId        = aws_servicecatalog_product.product.id
+        TemplateFilePath = "source_output::template.yaml"
       }
     }
   }
