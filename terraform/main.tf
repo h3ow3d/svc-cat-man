@@ -1,6 +1,6 @@
 locals {
-  config     = yamldecode(file("${path.module}/config.yml"))
-  portfolios = local.config.portfolios
+  config                     = yamldecode(file("${path.module}/config.yml"))
+  portfolios                 = local.config.portfolios
   base_product_template_path = "cloudformation/template.yaml"
 
   products = flatten([
@@ -42,7 +42,7 @@ resource "aws_s3_bucket" "product_template_storage" {
   force_destroy = true
 
   tags = {
-    Name        = "Storage for Service Catalog Product templates."
+    Name = "Storage for Service Catalog Product templates."
   }
 }
 
@@ -79,8 +79,7 @@ module "products" {
   product_version                             = each.value.version
   product_template_storage_bucket_domain_name = aws_s3_bucket.product_template_storage.bucket_domain_name
   portfolio_id                                = each.value.portfolio_id
-  portfolio_name                              = each.value.portfolio_name
   launch_policy_arns                          = each.value.launch_policy_arns
-  base_template_path = local.base_product_template_path
-  github_connection_arn = data.aws_ssm_parameter.codeconnection_arn.value
+  base_template_path                          = local.base_product_template_path
+  github_connection_arn                       = data.aws_ssm_parameter.codeconnection_arn.value
 }

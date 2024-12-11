@@ -5,6 +5,6 @@ variable "region" {
 }
 
 variable "environments" {
-  type = list
+  type    = list(any)
   default = ["development", "production"]
 }
