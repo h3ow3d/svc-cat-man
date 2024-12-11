@@ -38,6 +38,6 @@ variable "base_template_path" {
   type = string
 }
 
-variable "codeconnection_arn" {
+variable "github_connection_arn" {
   type = string
 }

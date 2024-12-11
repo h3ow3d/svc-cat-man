@@ -2,7 +2,7 @@ resource "aws_codepipeline" "product_pipeline" {
   name     = var.name
   role_arn = aws_iam_role.codepipeline_role.arn
 
-  pipeline_type = "v2"
+  pipeline_type = "V2"
 
   artifact_store {
     location = aws_s3_bucket.artifact_storage.bucket
@@ -11,6 +11,21 @@ resource "aws_codepipeline" "product_pipeline" {
     encryption_key {
       id   = data.aws_kms_alias.s3kmskey.arn
       type = "KMS"
+    }
+  }
+
+  trigger {
+    provider_type = "CodeStarSourceConnection"
+    git_configuration {
+      source_action_name = "Source"
+      push {
+        branches {
+          includes = ["development", "production"]
+        }
+        file_paths {
+          includes = ["template.yaml"]
+        }
+      }
     }
   }
 
@@ -31,31 +46,6 @@ resource "aws_codepipeline" "product_pipeline" {
         BranchName       = "default"
         OutputArtifactFormat = "CODEPIPELINE"
       }
-
-      configuration_filters = [
-        {
-          Type       = "FilePath"
-          MatchEquals = "template.yaml"
-        }
-      ]
-    }
-  }
-
-  stage {
-    name = "Build"
-
-    action {
-      name             = "Build"
-      category         = "Build"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      input_artifacts  = ["source_output"]
-      output_artifacts = ["build_output"]
-      version          = "1"
-
-      configuration = {
-        ProjectName = aws_codebuild_project.build_project.name
-      }
     }
   }
 
@@ -67,7 +57,7 @@ resource "aws_codepipeline" "product_pipeline" {
       category        = "Deploy"
       owner           = "AWS"
       provider        = "ServiceCatalog"
-      input_artifacts = ["build_output"]
+      input_artifacts = ["source_output"]
       version         = "1"
 
       configuration = {
@@ -75,7 +65,7 @@ resource "aws_codepipeline" "product_pipeline" {
         Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
         OutputFileName = "CreateStackOutput.json"
         StackName      = var.name
-        TemplatePath   = "build_output::template.yaml"
+        TemplatePath   = "source_output::template.yaml"
       }
     }
   }
@@ -142,7 +132,7 @@ data "aws_iam_policy_document" "codepipeline_policy" {
   statement {
     effect    = "Allow"
     actions   = ["codestar-connections:UseConnection"]
-    resources = [var.codeconnection_arn]
+    resources = [var.github_connection_arn]
   }
 
   statement {
