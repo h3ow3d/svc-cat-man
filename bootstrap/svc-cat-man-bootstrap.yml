@@ -166,6 +166,7 @@ Resources:
                   - secretsmanager:*"
                   - codepipeline:*
                   - kms:*
+                  - ssm:*
                 Resource:
                   - "*"
 
