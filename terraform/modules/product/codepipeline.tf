@@ -139,5 +139,5 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
 }
 
 data "aws_kms_alias" "s3kmskey" {
-  name = "aws/s3"
+  name = "alias/aws/s3"
 }
