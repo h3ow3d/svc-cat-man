@@ -10,7 +10,6 @@ phases:
     commands:
       # change to secondary artifact directory
       - cd $CODEBUILD_SRC_DIR_SourceArtifact
-      - ls -lsa
       - echo "Initializing Terraform..."
       - terraform init
       - echo "Validating Terraform..."
