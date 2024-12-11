@@ -164,6 +164,7 @@ Resources:
                   - iam:*
                   - cloudformation:*
                   - secretsmanager:*"
+                  - codepipeline:*
                 Resource:
                   - "*"
 
