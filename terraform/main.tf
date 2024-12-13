@@ -82,4 +82,5 @@ module "products" {
   launch_policy_arns                          = each.value.launch_policy_arns
   base_template_path                          = local.base_product_template_path
   github_connection_arn                       = data.aws_ssm_parameter.codeconnection_arn.value
+  github_aws_connector_app_id                 = var.github_aws_connector_app_id
 }

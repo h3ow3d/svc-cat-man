@@ -26,3 +26,8 @@ resource "github_repository_file" "base_template" {
   overwrite_on_create = false
   autocreate_branch   = true
 }
+
+resource "github_app_installation_repository" "aws_connector_for_github" {
+  installation_id = var.github_aws_connector_app_id
+  repository      = github_repository.product_repository.name
+}

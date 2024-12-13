@@ -37,3 +37,7 @@ variable "base_template_path" {
 variable "github_connection_arn" {
   type = string
 }
+
+variable "github_aws_connector_app_id" {
+  type = string
+}
