@@ -41,10 +41,9 @@ resource "aws_codepipeline" "product_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn        = var.github_connection_arn
-        FullRepositoryId     = github_repository.product_repository.full_name
-        BranchName           = "development"
-        OutputArtifactFormat = "CODEPIPELINE"
+        ConnectionArn    = var.github_connection_arn
+        FullRepositoryId = github_repository.product_repository.full_name
+        BranchName       = "development"
       }
     }
   }
