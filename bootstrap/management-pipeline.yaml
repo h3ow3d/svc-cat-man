@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: "2010-09-09"
-Description: |
+Description: >-
   CloudFormation template for bootstrapping Service Catalog Manager, including
   Terraform state resources, CodePipeline, CodeBuild, and integration with
   GitHub.
@@ -28,32 +28,17 @@ Parameters:
 
   GitHubSecretARN:
     Type: String
-    Description: |
+    Description: >-
       ARN of the manually managed GitHub token secret in AWS Secrets Manager.
 
   CodeConnectionARN:
     Type: String
-    Description: |
+    Description: >-
       ARN of the manually managed Codeconnection.
-
-  EnableJSM:
-    Type: String
-    Default: "true"
-    AllowedValues:
-      - "true"
-      - "false"
-    Description: |
-      Set to "true" to enable JSM-related resources (SMSyncUser and SMEndUser),
-      otherwise "false".
 
   LowerCaseStackName:
     Type: String
     Default: "svccatman"
-
-Conditions:
-  EnableJSMCondition: !Equals
-    - !Ref EnableJSM
-    - true
 
 Resources:
 

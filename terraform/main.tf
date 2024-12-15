@@ -1,5 +1,5 @@
 locals {
-  config                     = yamldecode(file("${path.module}/config.yml"))
+  config                     = yamldecode(file("${path.module}/config.yaml"))
   portfolios                 = local.config.portfolios
   base_product_template_path = "cloudformation/template.yaml"
 

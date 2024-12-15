@@ -1,7 +1,7 @@
 ---
 portfolios:
   - name: examples
-    description: |
+    description: >-
       Portfolio for example products.
     provider_name: tech_org
     groups:

@@ -3,6 +3,7 @@ Project Description: Develop a service catalogue management solution
 
 ## Bootstrap
 - [ ] Automate/script bootstrap process
+  - [ ] [Investigate implementing the bootstrap stacks as a nested stack.](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudformation-stack.html#cfn-cloudformation-stack-templatebody)
   - [ ] [Investigate patterns that are supported by AWS' compliance program.](https://aws.amazon.com/compliance/services-in-scope/)
 
 ## Product OAT
@@ -11,6 +12,7 @@ Project Description: Develop a service catalogue management solution
 ## Service Catalog Manager
 - [ ] Refactor config.yml to terraform variable
 - [ ] Template backend file
+- [ ] Add terraform directory trigger to management pipeline
 
 ## Project Groundwork
 - [ ] Commit lint, automate changelog
