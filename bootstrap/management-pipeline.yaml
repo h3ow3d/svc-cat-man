@@ -84,7 +84,7 @@ Resources:
   StateLockTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ${AWS::StackName}-${StateLockTableName}
+      TableName: !Sub ${LowerCaseStackName}-${StateLockTableName}
       AttributeDefinitions:
         - AttributeName: LockID
           AttributeType: S
