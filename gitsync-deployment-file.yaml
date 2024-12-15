@@ -1,7 +1,6 @@
 ---
 template-file-path: bootstrap/management-pipeline.yaml
 parameters:
-  EnableJSM: false
   # yamllint disable-line rule:line-length
   GitHubSecretARN: >-
     arn:aws:secretsmanager:eu-west-2:575108940418:secret:github_organisation_pat-qDYamW
