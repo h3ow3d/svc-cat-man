@@ -7,4 +7,5 @@ parameters:
   # yamllint disable-line rule:line-length
   CodeConnectionARN: >-
     arn:aws:codestar-connections:eu-west-2:575108940418:connection/db09785f-abd3-4e6a-911d-dc17d20f6ddf
-tags: {}
+tags:
+  Service: "Service Catalog Manager"

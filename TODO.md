@@ -13,6 +13,7 @@ Project Description: Develop a service catalogue management solution
 - [ ] Refactor config.yml to terraform variable
 - [ ] Template backend file
 - [ ] Add terraform directory trigger to management pipeline
+- [ ] Address checkov inline ignores
 
 ## Project Groundwork
 - [ ] Commit lint, automate changelog
