@@ -10,3 +10,4 @@ Project Description: Develop a service catalogue management solution
 
 ## Service Catalog Manager
 - [ ] Refactor config.yml to terraform variable
+- [ ] Template backend file
