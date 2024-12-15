@@ -3,8 +3,8 @@ AWS Service Catalog Manager
 
 ## Initial Deployment
 
-This project uses cloudformation gitsync to manage a bootstrap pipeline that 
-will deploy infrastructure stored in the terraform directory. 
+This project uses cloudformation gitsync to manage a bootstrap pipeline that
+will deploy infrastructure stored in the terraform directory.
 
 Gitsync requires a codeconnection to GitHub & an IAM role for managing the
 bootstrap pipeline's cloudformation stack.

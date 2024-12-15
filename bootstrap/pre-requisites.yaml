@@ -1,5 +1,7 @@
+---
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "CloudFormation template for a CodeStar connection to GitHub and an IAM Role."
+Description: |
+  CloudFormation template for a CodeStar connection to GitHub and an IAM Role.
 
 Parameters:
 
@@ -36,7 +38,8 @@ Resources:
     Type: AWS::SecretsManager::Secret
     Properties:
       Name: "github_organisation_pat"
-      Description: "Secret to store the GitHub token for the CodeStar connection."
+      Description: |
+        Secret to store the GitHub token for the CodeStar connection.
 
 Outputs:
 

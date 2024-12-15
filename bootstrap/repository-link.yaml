@@ -1,5 +1,8 @@
+---
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "CloudFormation template for creating a CodeStar Connections RepositoryLink to a GitHub repository."
+Description: |
+  CloudFormation template for creating a CodeStar Connections RepositoryLink to
+  a GitHub repository.
 
 Parameters:
 

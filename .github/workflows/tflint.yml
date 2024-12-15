@@ -1,8 +1,10 @@
+---
 name: TFLint
 
 permissions:
-  contents: read # This is required for actions/checkout
+  contents: read  # This is required for actions/checkout
 
+# yamllint disable-line rule:truthy
 on:
   workflow_dispatch:
   pull_request:

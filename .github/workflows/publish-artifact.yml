@@ -1,5 +1,7 @@
+---
 name: Publish Artifact
 
+# yamllint disable-line rule:truthy
 on:
   push:
     branches:

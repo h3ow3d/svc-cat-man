@@ -1,3 +1,4 @@
+---
 name: Checkov
 
 permissions:
@@ -9,6 +10,7 @@ permissions:
   # to get the Action run status
   actions: read
 
+# yamllint disable-line rule:truthy
 on:
   workflow_dispatch:
   pull_request:

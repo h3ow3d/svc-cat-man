@@ -1,3 +1,4 @@
+---
 AWSTemplateFormatVersion: "2010-09-09"
 Description: |
   CloudFormation template for bootstrapping Service Catalog Manager, including
@@ -55,6 +56,8 @@ Conditions:
     - true
 
 Resources:
+
+# yamllint disable-line rule:comments-indentation
 ################################################################################
 ## Terraform Resources
 ################################################################################
@@ -107,6 +110,7 @@ Resources:
       SSESpecification:
         SSEEnabled: true
 
+# yamllint disable-line rule:comments-indentation
 ################################################################################
 ## Service Catalog Pipeline
 ################################################################################
