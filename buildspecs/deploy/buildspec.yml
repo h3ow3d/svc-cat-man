@@ -7,7 +7,7 @@ env:
   # https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec.env.secrets-manager
   secrets-manager:
     # yamllint disable-line rule:line-length
-    GITHUB_TOKEN: "github_organisation_pat:github_token:GITHUB_TOKEN"
+    GITHUB_TOKEN: "github_organisation_pat:github_token"
 phases:
   build:
     commands:
