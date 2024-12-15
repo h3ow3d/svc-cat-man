@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CloudFormation template for a CodeStar connection to GitHub and an IAM Role."
+
+Parameters:
+
+  CodeStarConnectionName:
+    Type: String
+    Description: |
+      The name of the CodeStar connection.
+      [Recommended]: use the name of the GitHub organisation to avoid confusion.
+
+Resources:
+
+  GitHubCodeStarConnection:
+    Type: AWS::CodeStarConnections::Connection
+    Properties:
+      ConnectionName: !Ref CodeStarConnectionName
+      ProviderType: "GitHub"
+
+  CloudFormationAdminRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: "CloudFormationAdminRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+      Path: "/"
+
+  GitHubTokenSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: "github_organisation_pat"
+      Description: "Secret to store the GitHub token for the CodeStar connection."
+
+Outputs:
+
+  CodeStarConnectionId:
+    Description: "The ID of the CodeStar connection to GitHub."
+    Value: !Ref GitHubCodeStarConnection
+
+  IAMRoleArn:
+    Description: "The ARN of the IAM Role with AdministratorAccess."
+    Value: !GetAtt CloudFormationAdminRole.Arn
+
+  GitHubTokenSecretArn:
+    Description: "The ARN of the GitHub token secret in Secrets Manager."
+    Value: !Ref GitHubTokenSecret

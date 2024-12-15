@@ -8,18 +8,22 @@ Parameters:
   ArtifactStorageBucketName:
     Type: String
     Description: Name of the S3 bucket for storing repo artifacts.
+    Default: "artifact-storage"
 
   BuildSpecStorageBucketName:
     Type: String
     Description: Name of the S3 bucket for storing CodeBuild buildspec files.
+    Default: "buildspec-storage"
 
   StateBucketName:
     Type: String
     Description: Name of the S3 bucket for storing Terraform state.
+    Default: "terraform-state"
 
   StateLockTableName:
     Type: String
     Description: Name of the DynamoDB table for Terraform state locking.
+    Default: "state-lock-table"
 
   GitHubSecretARN:
     Type: String
@@ -41,6 +45,10 @@ Parameters:
       Set to "true" to enable JSM-related resources (SMSyncUser and SMEndUser),
       otherwise "false".
 
+  LowerCaseStackName:
+    Type: String
+    Default: "svccatman"
+
 Conditions:
   EnableJSMCondition: !Equals
     - !Ref EnableJSM
@@ -54,7 +62,7 @@ Resources:
   StateStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${AWS::StackName}-${StateBucketName}
+      BucketName: !Sub ${LowerCaseStackName}-${StateBucketName}
       VersioningConfiguration:
         Status: Enabled
       LifecycleConfiguration:
@@ -106,14 +114,14 @@ Resources:
   ArtifactStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${AWS::StackName}-${ArtifactStorageBucketName}
+      BucketName: !Sub ${LowerCaseStackName}-${ArtifactStorageBucketName}
       VersioningConfiguration:
         Status: Enabled
 
   BuildSpecStorageBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${AWS::StackName}-${BuildSpecStorageBucketName}
+      BucketName: !Sub ${LowerCaseStackName}-${BuildSpecStorageBucketName}
       VersioningConfiguration:
         Status: Enabled
 
@@ -183,7 +191,7 @@ Resources:
   DeployCodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: deploy
+      Name: Deploy
       Source:
         Type: CODEPIPELINE
       Artifacts:

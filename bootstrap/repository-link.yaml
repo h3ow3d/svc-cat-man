@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CloudFormation template for creating a CodeStar Connections RepositoryLink to a GitHub repository."
+
+Parameters:
+
+  OrganisationName:
+    Type: String
+    Description: "The name of the GitHub organisation."
+
+  RepositoryName:
+    Type: String
+    Description: "The name of the GitHub repository."
+
+  CodeStarConnectionArn:
+    Type: String
+    Description: "The ARN of the CodeStar connection."
+
+Resources:
+
+  CodeStarRepositoryLink:
+    Type: AWS::CodeStarConnections::RepositoryLink
+    Properties:
+      OwnerId: !Ref OrganisationName
+      RepositoryName: !Ref RepositoryName
+      ConnectionArn: !Ref CodeStarConnectionArn
+
+Outputs:
+
+  RepositoryLinkId:
+    Description: "The ID of the RepositoryLink."
+    Value: !Ref CodeStarRepositoryLink
