@@ -1,7 +1,24 @@
 {
+  "cfnLint.path": "/opt/homebrew/bin/cfn-lint",
   "editor.formatOnSave": true,
   "editor.rulers": [
     80
   ],
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "yaml.customTags": [
+    "!Ref",
+    "!Sub",
+    "!GetAtt",
+    "!If",
+    "!Equals",
+    "!And",
+    "!Or",
+    "!Not",
+    "!FindInMap sequence",
+    "!ImportValue",
+    "!Join sequence",
+    "!Split sequence",
+    "!Select sequence",
+    "!Base64"
+  ]
 }

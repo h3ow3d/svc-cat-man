@@ -41,7 +41,9 @@ repos:
     rev: v1.20.2
     hooks:
       - id: cfn-lint
-        files: ^(templates/|portfolios/).*\.(yaml|yml)$
+        files: ^(templates/|portfolios/|bootstrap/|).*\.(yaml|yml)$
+        exclude: \.pre-commit-config\.yaml
+
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.96.2
