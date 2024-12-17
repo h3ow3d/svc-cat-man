@@ -25,16 +25,8 @@ phases:
       # Secure the PEM file permissions (readable only by the user)
       - chmod 600 "${PEM_FILE_PATH}"
 
-      # Export the file path as an environment variable
-      - export GITHUB_APP_PEM_FILE="$(cat ${PEM_FILE_PATH})"
-      - echo "GITHUB_APP_PEM_FILE set to ${GITHUB_APP_PEM_FILE}"
-
   build:
     commands:
-      # Confirm the PEM file exists for debugging without exposing content
-      - echo "Checking that the PEM file was created securely..."
-      - ls -l "${GITHUB_APP_PEM_FILE}"
-
       # Change to the secondary artifact directory
       - cd $CODEBUILD_SRC_DIR_SourceArtifact
       - echo "Initializing Terraform..."
