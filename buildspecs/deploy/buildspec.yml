@@ -15,7 +15,7 @@ phases:
     commands:
       # yamllint disable-line rule:line-length
       - export GITHUB_APP_PEM_FILE=$(echo ${ENCODED_GITHUB_APP_PEM_FILE} | base64 -d)
-      - env
+      - printenv
       # change to secondary artifact directory
       - cd $CODEBUILD_SRC_DIR_SourceArtifact
       - echo "Initializing Terraform..."
