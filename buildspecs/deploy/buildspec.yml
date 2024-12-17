@@ -1,7 +1,6 @@
 ---
 version: 0.2
 
-# TODO: Refactor this to support github app PEM file.
 env:
   # BuildSpec secrets manager reference:
   # https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec.env.secrets-manager
@@ -10,13 +9,33 @@ env:
     GITHUB_APP_ID: "github_app_config:github_app_id"
     GITHUB_APP_INSTALLATION_ID: "github_app_config:github_app_installation_id"
     ENCODED_GITHUB_APP_PEM_FILE: "github_app_config:encoded_github_app_pem_file"
+
 phases:
+  pre_build:
+    commands:
+      - echo "Preparing environment for Terraform build..."
+
+      # Define file location for the decoded PEM file
+      - PEM_FILE_PATH="/tmp/github_app.pem"
+
+      # Decode the ENCODED_GITHUB_APP_PEM_FILE and save it as a file
+      - echo "Decoding and writing the GitHub PEM file..."
+      - echo "${ENCODED_GITHUB_APP_PEM_FILE}" | base64 -d > "${PEM_FILE_PATH}"
+
+      # Secure the PEM file permissions (readable only by the user)
+      - chmod 600 "${PEM_FILE_PATH}"
+
+      # Export the file path as an environment variable
+      - export GITHUB_PEM_FILE="${PEM_FILE_PATH}"
+      - echo "GITHUB_PEM_FILE set to ${GITHUB_PEM_FILE}"
+
   build:
     commands:
-      # yamllint disable-line rule:line-length
-      - export GITHUB_APP_PEM_FILE=$(echo ${ENCODED_GITHUB_APP_PEM_FILE} | base64 -d)
-      - printenv
-      # change to secondary artifact directory
+      # Confirm the PEM file exists for debugging without exposing content
+      - echo "Checking that the PEM file was created securely..."
+      - ls -l "${GITHUB_PEM_FILE}"
+
+      # Change to the secondary artifact directory
       - cd $CODEBUILD_SRC_DIR_SourceArtifact
       - echo "Initializing Terraform..."
       - terraform init
