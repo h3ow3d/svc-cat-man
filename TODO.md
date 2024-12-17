@@ -5,18 +5,19 @@ Project Description: Develop a service catalogue management solution
 - [ ] Automate/script bootstrap process
   - [ ] [Investigate implementing the bootstrap stacks as a nested stack.](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudformation-stack.html#cfn-cloudformation-stack-templatebody)
   - [ ] [Investigate patterns that are supported by AWS' compliance program.](https://aws.amazon.com/compliance/services-in-scope/)
+- [ ] Upgrade management pipeline to v2
+  - [ ] Configure CodeStarSourceConnection source provider
 
 ## Product OAT
 - [ ] [Is Cloudformation hooks an alternative to product codepipeline customisation?](https://eu-west-2.console.aws.amazon.com/cloudformation/hooks/overview?region=eu-west-2)
 
 ## Service Catalog Manager
-- ✓ PRIORITY: Refactor project to support custom GithHub App authentication
-  - ✓ [Refactor GitHub provider to implement app auth](https://registry.terraform.io/providers/integrations/github/latest/docs#github-app-installation)
-  - ✓ [Document GitHub App registration](https://docs.github.com/en/apps/creating-github-apps)
-  - ✓ Refactor pipeline to reference GitHub App PEM file
-- ✓ Refactor config.yml to terraform variable
+- [x] PRIORITY: Refactor project to support custom GithHub App authentication
+  - [x] [Refactor GitHub provider to implement app auth](https://registry.terraform.io/providers/integrations/github/latest/docs#github-app-installation)
+  - [x] [Document GitHub App registration](https://docs.github.com/en/apps/creating-github-apps)
+  - [x] Refactor pipeline to reference GitHub App PEM file
+- [x] Refactor config.yml to terraform variable
 - [ ] Template backend file, to support deployment environments
-- [ ] Add terraform directory trigger to management pipeline
 - [ ] Address checkov inline ignores
 
 ## Project Groundwork
