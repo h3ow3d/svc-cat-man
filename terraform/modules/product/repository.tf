@@ -36,7 +36,7 @@ resource "github_repository_file" "base_template" {
   repository          = github_repository.product_repository.name
   branch              = local.environments[0]
   file                = "template.yaml"
-  content             = file(var.base_template_path)
+  content             = file("${path.module}/cloudformation/template.yaml")
   commit_message      = "Managed by Terraform"
   commit_author       = "Terraform User"
   commit_email        = "terraform@example.com"

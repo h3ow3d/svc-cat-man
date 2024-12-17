@@ -26,10 +26,6 @@ variable "launch_policy_arns" {
   type = list(string)
 }
 
-variable "base_template_path" {
-  type = string
-}
-
 variable "github_connection_arn" {
   type = string
 }
