@@ -29,3 +29,7 @@ variable "launch_policy_arns" {
 variable "github_connection_arn" {
   type = string
 }
+
+variable "product_template_storage_bucket_name" {
+  type = string
+}

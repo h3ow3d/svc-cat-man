@@ -32,6 +32,14 @@ resource "aws_servicecatalog_constraint" "launch" {
   })
 }
 
+resource "aws_s3_object" "object" {
+  bucket = var.product_template_storage_bucket_name
+  key    = "${var.name}.yaml"
+  source = "${path.module}/cloudformation/template.yaml"
+
+  etag = filemd5("${path.module}/cloudformation/template.yaml")
+}
+
 resource "aws_servicecatalog_product" "product" {
   name  = var.name
   owner = var.product_owner
@@ -39,7 +47,7 @@ resource "aws_servicecatalog_product" "product" {
 
   provisioning_artifact_parameters {
     name         = var.product_version
-    template_url = "https://${var.product_template_storage_bucket_domain_name}/template.yaml"
+    template_url = "https://${var.product_template_storage_bucket_domain_name}/${var.name}.yaml"
     type         = var.type
   }
 }

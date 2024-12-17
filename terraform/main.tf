@@ -16,6 +16,8 @@ locals {
       }
     ]
   ])
+
+  product_template_storage_bucket_name = lower("product-template-storage-${random_string.suffix.result}")
 }
 
 data "aws_caller_identity" "current" {}
@@ -37,8 +39,7 @@ resource "aws_s3_bucket" "product_template_storage" {
   # checkov:skip=CKV_AWS_145:Ensure that S3 buckets are encrypted with KMS by default
   # checkov:skip=CKV_AWS_144:Ensure that S3 bucket has cross-region replication enabled
   # checkov:skip=CKV_AWS_21:Ensure all data stored in the S3 bucket have versioning enabled
-  bucket        = lower("product-template-storage-${random_string.suffix.result}")
-  force_destroy = true
+  bucket = local.product_template_storage_bucket_name
 
   tags = {
     Name = "Storage for Service Catalog Product templates."
@@ -60,13 +61,14 @@ module "portfolios" {
 }
 
 module "products" {
-  for_each = { for product in local.products : "${product.portfolio_name}-${product.name}" => product }
+  for_each = { for product in local.products : product.name => product }
 
   source                                      = "./modules/product"
   name                                        = each.value.name
   product_owner                               = each.value.owner
   type                                        = each.value.type
   product_version                             = each.value.version
+  product_template_storage_bucket_name        = local.product_template_storage_bucket_name
   product_template_storage_bucket_domain_name = aws_s3_bucket.product_template_storage.bucket_domain_name
   portfolio_id                                = each.value.portfolio_id
   launch_policy_arns                          = each.value.launch_policy_arns
