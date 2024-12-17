@@ -8,23 +8,9 @@ env:
     # yamllint disable-line rule:line-length
     GITHUB_APP_ID: "github_app_config:github_app_id"
     GITHUB_APP_INSTALLATION_ID: "github_app_config:github_app_installation_id"
-    ENCODED_GITHUB_APP_PEM_FILE: "github_app_config:encoded_github_app_pem_file"
+    GITHUB_APP_PEM_FILE: "github_app_config:github_app_pem_file"
 
 phases:
-  pre_build:
-    commands:
-      - echo "Preparing environment for Terraform build..."
-
-      # Define file location for the decoded PEM file
-      - PEM_FILE_PATH="/tmp/github_app.pem"
-
-      # Decode the ENCODED_GITHUB_APP_PEM_FILE and save it as a file
-      - echo "Decoding and writing the GitHub PEM file..."
-      - echo "${ENCODED_GITHUB_APP_PEM_FILE}" | base64 -d > "${PEM_FILE_PATH}"
-
-      # Secure the PEM file permissions (readable only by the user)
-      - chmod 600 "${PEM_FILE_PATH}"
-
   build:
     commands:
       # Change to the secondary artifact directory
