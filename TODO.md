@@ -10,12 +10,12 @@ Project Description: Develop a service catalogue management solution
 - [ ] [Is Cloudformation hooks an alternative to product codepipeline customisation?](https://eu-west-2.console.aws.amazon.com/cloudformation/hooks/overview?region=eu-west-2)
 
 ## Service Catalog Manager
-- [ ] PRIORITY: Refactor project to support custom GithHub App authentication
-  - [ ] [Refactor GitHub provider to implement](https://registry.terraform.io/providers/integrations/github/latest/docs#github-app-installation)
-  - [ ] [Document GitHub App registration](https://docs.github.com/en/apps/creating-github-apps)
-  - [ ] Refactor pipeline to reference GitHub App PEM file
-- [ ] Refactor config.yml to terraform variable
-- [ ] Template backend file
+- ✓ PRIORITY: Refactor project to support custom GithHub App authentication
+  - ✓ [Refactor GitHub provider to implement app auth](https://registry.terraform.io/providers/integrations/github/latest/docs#github-app-installation)
+  - ✓ [Document GitHub App registration](https://docs.github.com/en/apps/creating-github-apps)
+  - ✓ Refactor pipeline to reference GitHub App PEM file
+- ✓ Refactor config.yml to terraform variable
+- [ ] Template backend file, to support deployment environments
 - [ ] Add terraform directory trigger to management pipeline
 - [ ] Address checkov inline ignores
 
