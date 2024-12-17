@@ -26,7 +26,7 @@ phases:
       - chmod 600 "${PEM_FILE_PATH}"
 
       # Export the file path as an environment variable
-      - export GITHUB_APP_PEM_FILE="${PEM_FILE_PATH}"
+      - export GITHUB_APP_PEM_FILE="$(cat ${PEM_FILE_PATH})"
       - echo "GITHUB_APP_PEM_FILE set to ${GITHUB_APP_PEM_FILE}"
 
   build:
