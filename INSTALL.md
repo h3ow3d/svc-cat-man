@@ -19,7 +19,7 @@ bootstrap pipeline's cloudformation stack.
 
 ```bash
   aws cloudformation deploy \
-  --template-file bootstrap/pre-requisites.yaml \
+  --template-file bootstrap/001-pre-requisites.yaml \
   --stack-name "SvcCatMan-pre-requisites" \
   --capabilities CAPABILITY_NAMED_IAM \
   --parameter-overrides \
@@ -49,7 +49,7 @@ base64 -i <GITHUB_APP_PEM_FILE_PATH> > encoded_github_app_pem_file
 
 ```bash
   aws cloudformation deploy \
-  --template-file bootstrap/management-pipeline.yaml \
+  --template-file bootstrap/002-management-pipeline.yaml \
   --stack-name "SvcCatMan-management-pipeline" \
   --capabilities CAPABILITY_NAMED_IAM \
   --parameter-overrides \
@@ -61,7 +61,7 @@ base64 -i <GITHUB_APP_PEM_FILE_PATH> > encoded_github_app_pem_file
 
 ```bash
   aws cloudformation deploy \
-  --template-file bootstrap/repository-link.yaml \
+  --template-file bootstrap/003-repository-link.yaml \
   --stack-name "SvcCatMan-repository-link" \
   --parameter-overrides \
     OrganisationName="<GITHUB_ORGANISATION_NAME>"

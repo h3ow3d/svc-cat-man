@@ -1,5 +1,5 @@
 ---
-template-file-path: bootstrap/management-pipeline.yaml
+template-file-path: bootstrap/002-management-pipeline.yaml
 parameters:
   # yamllint disable-line rule:line-length
   GitHubAppConfigurationSecretARN: >-
