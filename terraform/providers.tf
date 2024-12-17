@@ -3,4 +3,7 @@ provider "aws" {
 }
 
 
-provider "github" {}
+provider "github" {
+  owner = "Infin8L00p"
+  app_auth {}
+}

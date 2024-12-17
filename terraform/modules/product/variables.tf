@@ -2,7 +2,7 @@ variable "name" {
   type = string
 }
 
-variable "owner" {
+variable "product_owner" {
   type = string
 }
 
@@ -26,18 +26,10 @@ variable "launch_policy_arns" {
   type = list(string)
 }
 
-variable "environments" {
-  type = list(any)
-}
-
 variable "base_template_path" {
   type = string
 }
 
 variable "github_connection_arn" {
-  type = string
-}
-
-variable "github_aws_connector_app_id" {
   type = string
 }

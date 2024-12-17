@@ -1,3 +1,7 @@
+locals {
+  environments = ["main", "development", "production"]
+}
+
 resource "github_repository" "product_repository" {
   # checkov:skip=CKV2_GIT_1:Ensure each Repository has branch protection associated
   name        = var.name
@@ -5,19 +9,32 @@ resource "github_repository" "product_repository" {
 
   visibility           = "private"
   vulnerability_alerts = true
+  auto_init            = true
 }
 
-resource "github_repository_file" "readme" {
-  repository     = github_repository.product_repository.name
-  file           = "README.md"
-  content        = "# Example Bucket"
-  commit_message = "Initial commit"
+resource "github_branch" "branch" {
+  for_each = toset(local.environments)
+
+  repository = github_repository.product_repository.name
+  branch     = each.value
+}
+
+resource "github_branch_default" "default" {
+  depends_on = [
+    github_branch.branch["main"]
+  ]
+
+  repository = github_repository.product_repository.name
+  branch     = local.environments[0]
 }
 
 resource "github_repository_file" "base_template" {
-  for_each            = toset(var.environments)
+  depends_on = [
+    github_branch.branch["main"]
+  ]
+
   repository          = github_repository.product_repository.name
-  branch              = each.value
+  branch              = local.environments[0]
   file                = "template.yaml"
   content             = file(var.base_template_path)
   commit_message      = "Managed by Terraform"
@@ -25,9 +42,4 @@ resource "github_repository_file" "base_template" {
   commit_email        = "terraform@example.com"
   overwrite_on_create = false
   autocreate_branch   = true
-}
-
-resource "github_app_installation_repository" "aws_connector_for_github" {
-  installation_id = var.github_aws_connector_app_id
-  repository      = github_repository.product_repository.name
 }

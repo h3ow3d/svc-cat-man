@@ -34,7 +34,7 @@ resource "aws_servicecatalog_constraint" "launch" {
 
 resource "aws_servicecatalog_product" "product" {
   name  = var.name
-  owner = var.owner
+  owner = var.product_owner
   type  = var.type
 
   provisioning_artifact_parameters {
