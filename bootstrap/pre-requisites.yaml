@@ -1,7 +1,7 @@
----
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
-  CloudFormation template for a CodeStar connection to GitHub and an IAM Role.
+  CloudFormation template for a CodeStar connection to GitHub, an IAM Role,
+  and an SSM Parameter containing the CodeStar Connection ARN.
 
 Parameters:
 
@@ -40,6 +40,14 @@ Resources:
       Name: "github_app_config"
       Description: >-
         Configuration for authorising GitHub provider.
+
+  CodeConnectionArnParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: "codeconnection_arn"
+      Type: String
+      Value: !GetAtt GitHubCodeStarConnection.ConnectionArn
+      Description: "The ARN of the CodeStar connection to GitHub."
 
 Outputs:
 
