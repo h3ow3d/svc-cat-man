@@ -10,16 +10,13 @@ Gitsync requires a codeconnection to GitHub & an IAM role for managing the
 bootstrap pipeline's cloudformation stack.
 
 ### Enable Organisation Access Tokens
-# [TODO: replace this with custom app setup instructions https://docs.github.com/en/apps/creating-github-apps]
 
-* [Set a token access policy for the GitHub organisation.](https://docs.github.com/en/organizations/managing-programmatic-access-to-your-organization/setting-a-personal-access-token-policy-for-your-organization)
-* [Create fine-grained access token.](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
-  * Owner: Organisation
-  * Permissions:
-      * Administration: Read/Write
-      * Content:        Read/Write
-      * Metadata:       Read-Only
-* Save a copy of the token somewhere safe.
+* [Create custom GitHub app.](https://docs.github.com/en/apps/creating-github-apps)
+  * Repository Permissions:
+    * Administration: Read & Write
+    * Contents:       Read & Write
+    * Metadata:       Read-only
+* Save a copy of the PEM file somewhere safe.
 
 ### Deploy Pre-Requisite Stack
 
@@ -34,12 +31,21 @@ bootstrap pipeline's cloudformation stack.
 
 [Approve pending connection.](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
 
-### Update GitHub Token Secret
+### Update GitHub Configuration Secret
+
+Base64 encode GitHub PEM file:
+```bash
+base64 -i <GITHUB_APP_PEM_FILE_PATH> > encoded_github_app_pem_file
+```
 
 ```bash
   aws secretsmanager update-secret \
-  --secret-id github_token \
-  --secret-string '{"github_organisation_pat":"<GITHUB_TOKEN>"}'
+  --secret-id github_app_config \
+  --secret-string '{
+    "github_app_id":"<GITHUB_APP_ID>",
+    "github_ app_installation_id":"<GITHUB_APP_INSTALLATION_ID>",
+    "encoded_github_app_pem_file":"<ENCODED_GITHUB_APP_PEM_FILE>"
+  }'
 ```
 
 ### Manually Deploy Management Pipeline
@@ -50,8 +56,7 @@ bootstrap pipeline's cloudformation stack.
   --stack-name "SvcCatMan-management-pipeline" \
   --capabilities CAPABILITY_NAMED_IAM \
   --parameter-overrides \
-    EnableJSM=false \
-    GitHubSecretARN="<GITHUB_TOKEN_SECRET_ARN>" \
+    GitHubAppConfigurationSecretArn="<GITHUB_TOKEN_SECRET_ARN>" \
     CodeConnectionARN="<CODECONNECTION_ARN>"
 ```
 
