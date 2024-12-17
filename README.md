@@ -8,7 +8,7 @@ deployment).
 ## Management Pipeline
 
 The management pipeline needs to be manually deployed to bootstrap the project.
-Instructions for bootstrapping can be found [here](bootstrap/README.md).
+Instructions for bootstrapping can be found [here](INSTALL.md).
 
 Once bootstrapped, updates to the management pipeline will be handled by
 [AWS Cloudformation GitSync](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/git-sync.html).
