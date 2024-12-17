@@ -2,8 +2,8 @@
 template-file-path: bootstrap/management-pipeline.yaml
 parameters:
   # yamllint disable-line rule:line-length
-  GitHubSecretARN: >-
-    arn:aws:secretsmanager:eu-west-2:575108940418:secret:github_organisation_pat-qDYamW
+  GitHubAppConfigurationSecretARN: >-
+    arn:aws:secretsmanager:eu-west-2:575108940418:secret:github_app_config-PBWZPe
   # yamllint disable-line rule:line-length
   CodeConnectionARN: >-
     arn:aws:codestar-connections:eu-west-2:575108940418:connection/db09785f-abd3-4e6a-911d-dc17d20f6ddf

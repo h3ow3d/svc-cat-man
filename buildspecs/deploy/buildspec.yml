@@ -1,16 +1,20 @@
 ---
 version: 0.2
 
-
+# TODO: Refactor this to support github app PEM file.
 env:
   # BuildSpec secrets manager reference:
   # https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec.env.secrets-manager
   secrets-manager:
     # yamllint disable-line rule:line-length
-    GITHUB_TOKEN: "github_organisation_pat:github_token"
+    GITHUB_APP_ID: "github_app_config:github_app_id"
+    GITHUB_APP_INSTALLATION_ID: "github_app_config:github_app_installation_id"
+    ENCODED_GITHUB_APP_PEM_FILE: "github_app_config:encoded_github_app_pem_file"
 phases:
   build:
     commands:
+      # yamllint disable-line rule:line-length
+      - export GITHUB_APP_PEM_FILE=$(echo ${ENCODED_GITHUB_APP_PEM_FILE} | base64 -D)
       # change to secondary artifact directory
       - cd $CODEBUILD_SRC_DIR_SourceArtifact
       - echo "Initializing Terraform..."

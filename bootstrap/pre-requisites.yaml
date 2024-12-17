@@ -34,12 +34,12 @@ Resources:
         - arn:aws:iam::aws:policy/AdministratorAccess
       Path: "/"
 
-  GitHubTokenSecret:
+  GitHubAppConfigurationSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name: "github_organisation_pat"
+      Name: "github_app_config"
       Description: >-
-        Secret to store the GitHub token for the CodeStar connection.
+        Configuration for authorising GitHub provider.
 
 Outputs:
 
@@ -51,6 +51,8 @@ Outputs:
     Description: "The ARN of the IAM Role with AdministratorAccess."
     Value: !GetAtt CloudFormationAdminRole.Arn
 
-  GitHubTokenSecretArn:
-    Description: "The ARN of the GitHub token secret in Secrets Manager."
-    Value: !Ref GitHubTokenSecret
+  GitHubAppConfigurationSecretArn:
+    Description: >-
+      The ARN of the configuration for authorising GitHub provider in Secrets
+      Manager.
+    Value: !Ref GitHubAppConfigurationSecret

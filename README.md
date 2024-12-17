@@ -10,6 +10,7 @@ Gitsync requires a codeconnection to GitHub & an IAM role for managing the
 bootstrap pipeline's cloudformation stack.
 
 ### Enable Organisation Access Tokens
+# [TODO: replace this with custom app setup instructions https://docs.github.com/en/apps/creating-github-apps]
 
 * [Set a token access policy for the GitHub organisation.](https://docs.github.com/en/organizations/managing-programmatic-access-to-your-organization/setting-a-personal-access-token-policy-for-your-organization)
 * [Create fine-grained access token.](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)

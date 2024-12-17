@@ -26,10 +26,11 @@ Parameters:
     Description: Name of the DynamoDB table for Terraform state locking.
     Default: "state-lock-table"
 
-  GitHubSecretARN:
+  GitHubAppConfigurationSecretARN:
     Type: String
     Description: >-
-      ARN of the manually managed GitHub token secret in AWS Secrets Manager.
+      The ARN of the Private key for authorising GitHub provider in Secrets
+      Manager.
 
   CodeConnectionARN:
     Type: String
@@ -42,7 +43,6 @@ Parameters:
 
 Resources:
 
-# yamllint disable-line rule:comments-indentation
 ################################################################################
 ## Terraform Resources
 ################################################################################
@@ -95,7 +95,6 @@ Resources:
       SSESpecification:
         SSEEnabled: true
 
-# yamllint disable-line rule:comments-indentation
 ################################################################################
 ## Service Catalog Pipeline
 ################################################################################
@@ -156,7 +155,7 @@ Resources:
                 Action:
                   - secretsmanager:*
                 Resource:
-                  - !Ref GitHubSecretARN
+                  - !Ref GitHubAppConfigurationSecretARN
               - Effect: Allow
                 Action:
                   - codestar-connections:*
