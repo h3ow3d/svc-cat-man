@@ -17,9 +17,6 @@ Once bootstrapped, updates to the management pipeline will be handled by
 
 The core of the project is stored in the [terraform directory](terraform/).
 
-AWS Service Catalog portfolios & products are configured using
-[config.yaml](terraform/config.yaml).
-
 ### Products
 
 A product is deployed with:
