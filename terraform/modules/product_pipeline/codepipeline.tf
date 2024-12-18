@@ -2,6 +2,10 @@ locals {
   product_repository_name = var.product_source == "local" ? "Infin8L00p/SvcCatMan" : null
 }
 
+data "aws_kms_alias" "s3kmskey" {
+  name = "alias/aws/s3"
+}
+
 resource "aws_codepipeline" "product_pipeline" {
   name     = var.name
   role_arn = aws_iam_role.codepipeline_role.arn
@@ -106,7 +110,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "codepipeline_role" {
-  name               = "${var.name}_codepipeline_role"
+  name               = "${var.name}-codepipeline-service-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -152,8 +156,7 @@ data "aws_iam_policy_document" "codepipeline_policy" {
 
     actions = [
       "servicecatalog:ListProvisioningArtifacts",
-      "servicecatalog:DescribeProduct",
-      "servicecatalog:CreateProvisioningArtifact"
+      "servicecatalog:DescribeProduct"
     ]
 
     resources = [
@@ -166,8 +169,4 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
   name   = "codepipeline_policy"
   role   = aws_iam_role.codepipeline_role.id
   policy = data.aws_iam_policy_document.codepipeline_policy.json
-}
-
-data "aws_kms_alias" "s3kmskey" {
-  name = "alias/aws/s3"
 }
