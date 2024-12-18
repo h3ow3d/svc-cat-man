@@ -154,6 +154,7 @@ Resources:
                   - codepipeline:*
                   - kms:*
                   - ssm:*
+                  - eventbridge:*
                 Resource:
                   - "*"
 
@@ -222,7 +223,7 @@ Resources:
   PipelineNameSSMParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: !Sub ${AWS::StackName}ManagementPipelineName
+      Name: !Sub ${AWS::StackName}-name
       Type: String
       Value: !Ref CodePipeline
       Description: "Stores the name of the CodePipeline."
