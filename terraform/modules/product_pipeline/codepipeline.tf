@@ -24,7 +24,7 @@ resource "aws_codepipeline" "product_pipeline" {
       source_action_name = "Source"
       push {
         branches {
-          includes = ["development", "production"]
+          includes = ["main"]
         }
         file_paths {
           includes = ["template.yaml"]
@@ -47,7 +47,7 @@ resource "aws_codepipeline" "product_pipeline" {
       configuration = {
         ConnectionArn    = var.github_connection_arn
         FullRepositoryId = local.product_repository_name
-        BranchName       = "development"
+        BranchName       = "main"
       }
     }
   }
