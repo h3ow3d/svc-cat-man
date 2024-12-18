@@ -1,5 +1,5 @@
 locals {
-  product_template_source = var.product_source == "local" ? "${path.module}/products/${var.name}/template.yaml" : "${path.module}/cloudformation/template.yaml"
+  product_template_source = var.product_source == "local" ? "${path.cwd}/products/${var.name}/template.yaml" : "${path.cwd}/cloudformation/template.yaml"
 }
 
 resource "aws_iam_role" "product_launch_role" {
