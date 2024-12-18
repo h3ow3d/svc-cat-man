@@ -64,10 +64,10 @@ resource "aws_codepipeline" "product_pipeline" {
       version         = "1"
 
       configuration = {
-        ProductId              = var.product_id
-        TemplateFilePath       = "source_output::template.yaml"
-        ProductType            = var.product_type
-        ProvisionedProductName = var.name
+        ProductId                = var.product_id
+        TemplateFilePath         = "source_output::template.yaml"
+        ProductType              = var.product_type
+        ProvisioningArtifactName = var.name
       }
     }
   }
