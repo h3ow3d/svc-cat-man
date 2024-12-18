@@ -1,5 +1,5 @@
 data "aws_ssm_parameter" "management_pipeline_name" {
-  name = "SvcCatManManagementPipelineName"
+  name = "SvcCatMan-management-pipeline-name"
 }
 
 resource "aws_cloudwatch_event_rule" "trigger_pipeline_on_success" {
