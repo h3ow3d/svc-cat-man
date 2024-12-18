@@ -47,12 +47,12 @@ resource "aws_s3_object" "object" {
 resource "aws_servicecatalog_product" "product" {
   name  = var.name
   owner = var.product_owner
-  type  = var.type
+  type  = var.product_type
 
   provisioning_artifact_parameters {
     name         = var.product_version
     template_url = "https://${var.product_template_storage_bucket_domain_name}/${var.name}.yaml"
-    type         = var.type
+    type         = var.product_type
   }
 }
 

@@ -13,3 +13,7 @@ variable "product_id" {
 variable "github_connection_arn" {
   type = string
 }
+
+variable "product_type" {
+  type = string
+}

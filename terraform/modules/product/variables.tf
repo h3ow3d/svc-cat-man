@@ -6,7 +6,7 @@ variable "product_owner" {
   type = string
 }
 
-variable "type" {
+variable "product_type" {
   type = string
 }
 
