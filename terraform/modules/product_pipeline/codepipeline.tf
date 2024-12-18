@@ -110,7 +110,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "codepipeline_role" {
-  name               = "${var.name}-codepipeline-service-role"
+  name               = "test-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
