@@ -65,7 +65,7 @@ resource "aws_codepipeline" "product_pipeline" {
 
       configuration = {
         ProductId          = var.product_id
-        TemplateFilePath   = "source_output"
+        TemplateFilePath   = "terraform/products/${var.name}/template.yaml"
         ProductType        = var.product_type
         ProductVersionName = var.name
       }
