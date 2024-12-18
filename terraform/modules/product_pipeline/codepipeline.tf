@@ -27,7 +27,7 @@ resource "aws_codepipeline" "product_pipeline" {
           includes = ["main"]
         }
         file_paths {
-          includes = ["template.yaml"]
+          includes = ["terraform/products/${var.name}/template.yaml"]
         }
       }
     }
@@ -50,19 +50,6 @@ resource "aws_codepipeline" "product_pipeline" {
         BranchName       = "main"
       }
     }
-
-    action {
-      name             = "Source_DeployPipeline"
-      category         = "Source"
-      owner            = "AWS"
-      provider         = "Pipeline"
-      version          = "1"
-      output_artifacts = ["deploy_pipeline_output"]
-
-      configuration = {
-        PipelineName = "DeployPipeline"
-      }
-    }
   }
 
   stage {
@@ -73,12 +60,12 @@ resource "aws_codepipeline" "product_pipeline" {
       category        = "Deploy"
       owner           = "AWS"
       provider        = "ServiceCatalog"
-      input_artifacts = ["source_output", "deploy_pipeline_output"]
+      input_artifacts = ["source_output"]
       version         = "1"
 
       configuration = {
         ProductId          = var.product_id
-        TemplateFilePath   = "source_output::template.yaml"
+        TemplateFilePath   = "source_output::terraform/products/${var.name}/template.yaml"
         ProductType        = var.product_type
         ProductVersionName = var.name
       }
