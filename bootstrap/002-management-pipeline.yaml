@@ -154,7 +154,7 @@ Resources:
                   - codepipeline:*
                   - kms:*
                   - ssm:*
-                  - eventbridge:*
+                  - events:*
                 Resource:
                   - "*"
 
