@@ -7,6 +7,8 @@ Project Description: Develop a service catalogue management solution
   - [ ] [Investigate patterns that are supported by AWS' compliance program.](https://aws.amazon.com/compliance/services-in-scope/)
 - [ ] Upgrade management pipeline to v2
   - [ ] Configure CodeStarSourceConnection source provider
+- [ ] Move bootstrap buildspecs to bootstrap/ directory
+  - [ ] Refactor publish-buildspec workflow to reference migrated dir
 
 ## Product OAT
 - [ ] [Is Cloudformation hooks an alternative to product codepipeline customisation?](https://eu-west-2.console.aws.amazon.com/cloudformation/hooks/overview?region=eu-west-2)
