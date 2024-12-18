@@ -26,10 +26,10 @@ variable "launch_policy_arns" {
   type = list(string)
 }
 
-variable "github_connection_arn" {
+variable "product_template_storage_bucket_name" {
   type = string
 }
 
-variable "product_template_storage_bucket_name" {
+variable "product_source" {
   type = string
 }

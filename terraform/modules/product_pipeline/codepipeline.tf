@@ -1,3 +1,7 @@
+locals {
+  product_repository_name = var.product_source == "local" ? "Infin8L00p/SvcCatMan" : null
+}
+
 resource "aws_codepipeline" "product_pipeline" {
   name     = var.name
   role_arn = aws_iam_role.codepipeline_role.arn
@@ -42,7 +46,7 @@ resource "aws_codepipeline" "product_pipeline" {
 
       configuration = {
         ConnectionArn    = var.github_connection_arn
-        FullRepositoryId = github_repository.product_repository.full_name
+        FullRepositoryId = local.product_repository_name
         BranchName       = "development"
       }
     }
@@ -60,7 +64,7 @@ resource "aws_codepipeline" "product_pipeline" {
       version         = "1"
 
       configuration = {
-        ProductId        = aws_servicecatalog_product.product.id
+        ProductId        = var.product_id
         TemplateFilePath = "source_output::template.yaml"
       }
     }

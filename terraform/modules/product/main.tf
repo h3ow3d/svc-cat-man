@@ -1,3 +1,7 @@
+locals {
+  product_template_source = var.product_source == "local" ? "${path.module}/products/${var.name}/template.yaml" : "${path.module}/cloudformation/template.yaml"
+}
+
 resource "aws_iam_role" "product_launch_role" {
   name = "${var.name}-launch-role"
   assume_role_policy = jsonencode({
@@ -35,9 +39,9 @@ resource "aws_servicecatalog_constraint" "launch" {
 resource "aws_s3_object" "object" {
   bucket = var.product_template_storage_bucket_name
   key    = "${var.name}.yaml"
-  source = "${path.module}/cloudformation/template.yaml"
+  source = local.product_template_source
 
-  etag = filemd5("${path.module}/cloudformation/template.yaml")
+  etag = filemd5(local.product_template_source)
 }
 
 resource "aws_servicecatalog_product" "product" {

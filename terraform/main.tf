@@ -12,6 +12,7 @@ locals {
         owner              = product.owner
         type               = product.type
         version            = product.version
+        source             = product.source
         launch_policy_arns = product.launch_policy_arns
       }
     ]
@@ -68,9 +69,19 @@ module "products" {
   product_owner                               = each.value.owner
   type                                        = each.value.type
   product_version                             = each.value.version
+  product_source                              = each.value.source
   product_template_storage_bucket_name        = local.product_template_storage_bucket_name
   product_template_storage_bucket_domain_name = aws_s3_bucket.product_template_storage.bucket_domain_name
   portfolio_id                                = each.value.portfolio_id
   launch_policy_arns                          = each.value.launch_policy_arns
-  github_connection_arn                       = data.aws_ssm_parameter.codeconnection_arn.value
+}
+
+module "product_pipelines" {
+  for_each = { for product in local.products : product.name => product }
+
+  source                = "./modules/product_pipeline"
+  name                  = each.value.name
+  product_source        = each.value.source
+  product_id            = module.products[each.key].product_id
+  github_connection_arn = data.aws_ssm_parameter.codeconnection_arn.value
 }
