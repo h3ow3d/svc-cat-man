@@ -67,7 +67,7 @@ module "products" {
   source                                      = "./modules/product"
   name                                        = each.value.name
   product_owner                               = each.value.owner
-  type                                        = each.value.type
+  product_type                                = each.value.type
   product_version                             = each.value.version
   product_source                              = each.value.source
   product_template_storage_bucket_name        = local.product_template_storage_bucket_name
@@ -82,6 +82,7 @@ module "product_pipelines" {
   source                = "./modules/product_pipeline"
   name                  = each.value.name
   product_source        = each.value.source
+  product_type          = each.value.type
   product_id            = module.products[each.key].product_id
   github_connection_arn = data.aws_ssm_parameter.codeconnection_arn.value
 }
