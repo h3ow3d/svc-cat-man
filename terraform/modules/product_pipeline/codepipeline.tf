@@ -106,7 +106,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "codepipeline_role" {
-  name               = "test-role"
+  name               = "${var.name}_codepipeline_role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -152,7 +152,8 @@ data "aws_iam_policy_document" "codepipeline_policy" {
 
     actions = [
       "servicecatalog:ListProvisioningArtifacts",
-      "servicecatalog:DescribeProduct"
+      "servicecatalog:DescribeProduct",
+      "servicecatalog:CreateProvisioningArtifact"
     ]
 
     resources = [
