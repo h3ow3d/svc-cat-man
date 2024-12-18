@@ -10,6 +10,10 @@ variable "product_id" {
   type = string
 }
 
+variable "product_arn" {
+  type = string
+}
+
 variable "github_connection_arn" {
   type = string
 }

@@ -73,7 +73,6 @@ resource "aws_codepipeline" "product_pipeline" {
   }
 }
 
-
 resource "aws_s3_bucket" "artifact_storage" {
   # checkov:skip=CKV2_AWS_62:Ensure S3 buckets should have event notifications enabled
   # checkov:skip=CKV_AWS_18:Ensure the S3 bucket has access logging enabled
@@ -146,6 +145,19 @@ data "aws_iam_policy_document" "codepipeline_policy" {
     ]
 
     resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "servicecatalog:ListProvisioningArtifacts",
+      "servicecatalog:DescribeProduct"
+    ]
+
+    resources = [
+      var.product_arn
+    ]
   }
 }
 

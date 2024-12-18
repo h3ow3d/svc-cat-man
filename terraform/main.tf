@@ -84,5 +84,6 @@ module "product_pipelines" {
   product_source        = each.value.source
   product_type          = each.value.type
   product_id            = module.products[each.key].product_id
+  product_arn           = module.products[each.key].product_arn
   github_connection_arn = data.aws_ssm_parameter.codeconnection_arn.value
 }
