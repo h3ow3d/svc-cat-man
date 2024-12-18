@@ -27,7 +27,7 @@ resource "aws_codepipeline" "product_pipeline" {
           includes = ["main"]
         }
         file_paths {
-          includes = ["template.yaml"]
+          includes = ["terraform/products/${var.name}/template.yaml"]
         }
       }
     }
