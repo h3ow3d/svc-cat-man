@@ -1,16 +1,16 @@
-data "aws_ssm_parameter" "pipeline_name" {
+data "aws_ssm_parameter" "management_pipeline_name" {
   name = "SvcCatManManagementPipelineName"
 }
 
 resource "aws_cloudwatch_event_rule" "trigger_pipeline_on_success" {
-  name        = "trigger-${data.aws_ssm_parameter.pipeline_name.value}-on-success"
+  name        = "trigger-${data.aws_ssm_parameter.management_pipeline_name.value}-on-success"
   description = "Triggers the pipeline when a related event occurs"
 
   event_pattern = jsonencode({
     source      = ["aws.codepipeline"],
     detail-type = ["CodePipeline Pipeline Execution State Change"],
     detail = {
-      pipeline = [data.aws_ssm_parameter.pipeline_name.value],
+      pipeline = [data.aws_ssm_parameter.management_pipeline_name.value],
       state    = ["SUCCEEDED"]
     }
   })
