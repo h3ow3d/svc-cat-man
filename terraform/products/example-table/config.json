@@ -3,7 +3,7 @@
   "ProductVersionDescription": "Sample table template.",
   "ProductVersionName": "0",
   "Properties": {
-    "TemplateFilePath": "/template.yaml"
+    "TemplateFilePath": "terraform/products/example-bucket/template.yaml"
   },
   "SchemaVersion": "1.0"
 }
