@@ -21,3 +21,7 @@ variable "github_connection_arn" {
 variable "product_type" {
   type = string
 }
+
+variable "product_version" {
+  type = string
+}

@@ -71,7 +71,7 @@ resource "aws_codepipeline" "product_pipeline" {
         ProductId          = var.product_id
         TemplateFilePath   = "terraform/products/${var.name}/template.yaml"
         ProductType        = var.product_type
-        ProductVersionName = var.name
+        ProductVersionName = var.product_version
       }
     }
   }
