@@ -139,7 +139,10 @@ data "aws_iam_policy_document" "codepipeline_policy" {
     sid    = "AllowUseCodeConnection"
     effect = "Allow"
 
-    actions   = ["codestar-connections:UseConnection"]
+    actions = [
+      "codestar-connections:UseConnection",
+      "codeconnections:UseConnection"
+    ]
     resources = [var.github_connection_arn]
   }
 
