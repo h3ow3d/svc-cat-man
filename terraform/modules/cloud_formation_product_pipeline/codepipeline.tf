@@ -31,7 +31,10 @@ resource "aws_codepipeline" "product_pipeline" {
           includes = ["main"]
         }
         file_paths {
-          includes = ["terraform/products/${var.name}/template.yaml"]
+          includes = [
+            "terraform/products/${var.name}/config.json",
+            "terraform/products/${var.name}/template.yaml"
+          ]
         }
       }
     }
@@ -68,10 +71,8 @@ resource "aws_codepipeline" "product_pipeline" {
       version         = "1"
 
       configuration = {
-        ProductId          = var.product_id
-        TemplateFilePath   = "terraform/products/${var.name}/template.yaml"
-        ProductType        = var.product_type
-        ProductVersionName = var.product_version
+        ProductId             = var.product_id
+        ConfigurationFilePath = "terraform/products/${var.name}/config.json"
       }
     }
   }

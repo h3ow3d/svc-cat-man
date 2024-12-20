@@ -83,9 +83,7 @@ module "cloud_formation_product_pipeline" {
 
   source                = "./modules/cloud_formation_product_pipeline"
   name                  = each.value.name
-  product_version       = each.value.version
   product_source        = each.value.source
-  product_type          = each.value.type
   product_id            = module.products[each.key].product_id
   product_arn           = module.products[each.key].product_arn
   github_connection_arn = data.aws_ssm_parameter.codeconnection_arn.value

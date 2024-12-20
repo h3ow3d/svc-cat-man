@@ -17,11 +17,3 @@ variable "product_arn" {
 variable "github_connection_arn" {
   type = string
 }
-
-variable "product_type" {
-  type = string
-}
-
-variable "product_version" {
-  type = string
-}

@@ -1,0 +1,9 @@
+{
+  "ProductType": "CLOUD_FORMATION_TEMPLATE",
+  "ProductVersionDescription": "Sample table template.",
+  "ProductVersionName": "0",
+  "Properties": {
+    "TemplateFilePath": "/template.yaml"
+  },
+  "SchemaVersion": "1.0"
+}
