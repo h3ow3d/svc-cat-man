@@ -11,7 +11,6 @@ locals {
         description        = portfolio.description
         owner              = product.owner
         type               = product.type
-        version            = product.version
         source             = product.source
         launch_policy_arns = product.launch_policy_arns
       }

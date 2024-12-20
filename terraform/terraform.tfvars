@@ -7,22 +7,20 @@ portfolios = [
 
     products = [
       {
-        name    = "example-bucket"
-        owner   = "platform"
-        type    = "CLOUD_FORMATION_TEMPLATE"
-        version = "0.1.1"
-        source  = "local"
+        name   = "example-bucket"
+        owner  = "platform"
+        type   = "CLOUD_FORMATION_TEMPLATE"
+        source = "local"
         launch_policy_arns = [
           "arn:aws:iam::aws:policy/AmazonS3FullAccess",
           "arn:aws:iam::aws:policy/AWSCloudFormationFullAccess"
         ]
       },
       {
-        name    = "example-table"
-        owner   = "platform"
-        type    = "CLOUD_FORMATION_TEMPLATE"
-        version = "0"
-        source  = "local"
+        name   = "example-table"
+        owner  = "platform"
+        type   = "CLOUD_FORMATION_TEMPLATE"
+        source = "local"
         launch_policy_arns = [
           "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
           "arn:aws:iam::aws:policy/AWSCloudFormationFullAccess"

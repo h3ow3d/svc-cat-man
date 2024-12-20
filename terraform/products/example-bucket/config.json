@@ -1,7 +1,7 @@
 {
   "ProductType": "CLOUD_FORMATION_TEMPLATE",
   "ProductVersionDescription": "Sample bucket template.",
-  "ProductVersionName": "0.1.2",
+  "ProductVersionName": "0",
   "Properties": {
     "TemplateFilePath": "terraform/products/example-bucket/template.yaml"
   },

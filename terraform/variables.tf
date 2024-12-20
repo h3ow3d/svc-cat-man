@@ -15,7 +15,6 @@ variable "portfolios" {
       name               = string
       owner              = string
       type               = string
-      version            = string
       source             = string
       launch_policy_arns = list(string)
     }))
