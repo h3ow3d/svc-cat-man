@@ -160,6 +160,7 @@ data "aws_iam_policy_document" "codepipeline_policy" {
     effect = "Allow"
 
     actions = [
+      "servicecatalog:DescribeProvisioningArtifact",
       "servicecatalog:CreateProvisioningArtifact",
       "servicecatalog:ListProvisioningArtifacts",
       "servicecatalog:DescribeProduct",
