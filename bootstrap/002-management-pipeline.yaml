@@ -272,7 +272,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action: "codepipeline:StartPipelineExecution"
-                Resource: !Ref CodePipeline
+                Resource: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${AWS::StackName}" # yamllint disable-line rule:line-length
 
 Outputs:
   ArtifactStorageBucketName:
