@@ -3,8 +3,8 @@ data "aws_ssm_parameter" "management_pipeline_name" {
 }
 
 resource "aws_cloudwatch_event_rule" "trigger_pipeline_on_success" {
-  name        = "trigger-${aws_codepipeline.product_pipeline.id}-on-success"
-  description = "Triggers the pipeline when a related event occurs"
+  name        = "trigger-product-pipelines-on-success"
+  description = "Triggers product pipelines on success of Service Catalog pipeline"
 
   event_pattern = jsonencode({
     source      = ["aws.codepipeline"],
@@ -17,13 +17,15 @@ resource "aws_cloudwatch_event_rule" "trigger_pipeline_on_success" {
 }
 
 resource "aws_cloudwatch_event_target" "trigger_pipeline_target" {
+  for_each = module.cloud_formation_product_pipeline
+
   rule = aws_cloudwatch_event_rule.trigger_pipeline_on_success.name
-  arn  = aws_codepipeline.product_pipeline.arn
+  arn  = each.value.product_pipeline_arn
 
   role_arn = aws_iam_role.eventbridge_trigger_role.arn
 
   input = jsonencode({
-    pipelineName = aws_codepipeline.product_pipeline.id
+    pipelineName = each.key
   })
 }
 
@@ -44,18 +46,24 @@ resource "aws_iam_role" "eventbridge_trigger_role" {
   })
 }
 
+data "aws_iam_policy_document" "eventbridge_trigger_policy" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "codepipeline:StartPipelineExecution"
+    ]
+
+    resources = [
+      for product_pipeline in module.cloud_formation_product_pipeline : product_pipeline.product_pipeline_arn
+    ]
+  }
+}
+
+
 resource "aws_iam_role_policy" "eventbridge_trigger_policy" {
   name = "eventbridge-trigger-policy"
   role = aws_iam_role.eventbridge_trigger_role.id
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect   = "Allow",
-        Action   = "codepipeline:StartPipelineExecution",
-        Resource = aws_codepipeline.product_pipeline.arn
-      }
-    ]
-  })
+  policy = data.aws_iam_policy_document.eventbridge_trigger_policy.json
 }
