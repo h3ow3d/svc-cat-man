@@ -176,7 +176,7 @@ Resources:
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
-      Name: DeployPipeline
+      Name: !Ref AWS::StackName
       RoleArn: !GetAtt CodePipelineRole.Arn
       ArtifactStore:
         Type: S3
@@ -246,7 +246,7 @@ Resources:
           - "CloudFormation Stack Status Change"
         detail:
           stack-id:
-            - !Ref "AWS::StackId"
+            - !Ref AWS::StackId
           status:
             - "UPDATE_COMPLETE"
             - "CREATE_COMPLETE"
@@ -266,7 +266,7 @@ Resources:
               Service: events.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: "TriggerPipelinePolicy"
+        - PolicyName: !Sub "${AWS::StackName}TriggerPipelinePolicy"
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
