@@ -162,7 +162,8 @@ data "aws_iam_policy_document" "codepipeline_policy" {
     actions = [
       "servicecatalog:CreateProvisioningArtifact",
       "servicecatalog:ListProvisioningArtifacts",
-      "servicecatalog:DescribeProduct"
+      "servicecatalog:DescribeProduct",
+      "servicecatalog:UpdateProduct"
     ]
 
     resources = [
