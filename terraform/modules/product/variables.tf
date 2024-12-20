@@ -10,10 +10,6 @@ variable "product_type" {
   type = string
 }
 
-variable "product_version" {
-  type = string
-}
-
 variable "product_template_storage_bucket_domain_name" {
   type = string
 }

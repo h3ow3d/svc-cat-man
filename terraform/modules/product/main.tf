@@ -53,9 +53,15 @@ resource "aws_servicecatalog_product" "product" {
   type  = var.product_type
 
   provisioning_artifact_parameters {
-    name         = var.product_version
+    name         = var.name
     template_url = "https://${var.product_template_storage_bucket_domain_name}/${var.name}.yaml"
     type         = var.product_type
+  }
+
+  lifecycle {
+    ignore_changes = [
+      provisioning_artifact_parameters[0].name
+    ]
   }
 }
 
