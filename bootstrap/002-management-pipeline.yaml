@@ -140,6 +140,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - codestar-connections:*
+                  - codeconnections:*
                 Resource:
                   - !Ref CodeConnectionARN
               - Effect: Allow
