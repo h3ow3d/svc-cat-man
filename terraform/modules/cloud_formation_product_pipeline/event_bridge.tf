@@ -3,7 +3,7 @@ data "aws_ssm_parameter" "management_pipeline_name" {
 }
 
 resource "aws_cloudwatch_event_rule" "trigger_pipeline_on_success" {
-  name        = "trigger-${data.aws_ssm_parameter.management_pipeline_name.value}-on-success"
+  name        = "trigger-${aws_codepipeline.product_pipeline.id}-on-success"
   description = "Triggers the pipeline when a related event occurs"
 
   event_pattern = jsonencode({
