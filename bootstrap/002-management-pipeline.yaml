@@ -30,6 +30,11 @@ Parameters:
     Type: String
     Default: "svccatman"
 
+  CodeConnectionArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: The ARN of the CodeConnection stored in SSM Parameter Store
+    Default: "/codeconnection_arn"
+
 Resources:
 
 ################################################################################
@@ -131,7 +136,7 @@ Resources:
                   - codestar-connections:*
                   - codeconnections:*
                 Resource:
-                  - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/codeconnection_arn" # yamllint disable-line rule:line-length
+                  - !Ref CodeConnectionArn
               - Effect: Allow
                 Action:
                   - logs:*
@@ -262,3 +267,24 @@ Resources:
               - Effect: Allow
                 Action: "codepipeline:StartPipelineExecution"
                 Resource: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${AWS::StackName}" # yamllint disable-line rule:line-length
+
+Outputs:
+  ArtifactStorageBucketName:
+    Description: The name of the S3 bucket for storing artifacts.
+    Value: !Ref ArtifactStorageBucket
+
+  BuildSpecStorageBucketName:
+    Description: The name of the S3 bucket for storing buildspecs.
+    Value: !Ref BuildSpecStorageBucket
+
+  StateBucketName:
+    Description: The name of the S3 bucket for storing Terraform state.
+    Value: !Ref StateStorageBucket
+
+  StateLockTableName:
+    Description: The name of the DynamoDB table for Terraform state locking.
+    Value: !Ref StateLockTable
+
+  CodePipelineName:
+    Description: The name of the CodePipeline.
+    Value: !Ref CodePipeline

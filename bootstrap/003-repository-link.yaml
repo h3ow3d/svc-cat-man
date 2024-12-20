@@ -9,14 +9,17 @@ Parameters:
   OrganisationName:
     Type: String
     Description: "The name of the GitHub organisation."
+    Default: "Infin8L00p"
 
   RepositoryName:
     Type: String
     Description: "The name of the GitHub repository."
+    Default: "SvcCatMan"
 
-  CodeStarConnectionArn:
-    Type: String
-    Description: "The ARN of the CodeStar connection."
+  CodeConnectionArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: The ARN of the CodeConnection stored in SSM Parameter Store
+    Default: "/codeconnection_arn"
 
 Resources:
 
@@ -25,7 +28,7 @@ Resources:
     Properties:
       OwnerId: !Ref OrganisationName
       RepositoryName: !Ref RepositoryName
-      ConnectionArn: !Ref CodeStarConnectionArn
+      ConnectionArn: !Ref CodeConnectionArn
 
 Outputs:
 
