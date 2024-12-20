@@ -118,6 +118,7 @@ data "aws_iam_policy_document" "codepipeline_policy" {
   # checkov:skip=CKV_AWS_111:Ensure IAM policies does not allow write access without constraints
   # checkov:skip=CKV_AWS_356:Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions
   statement {
+    sid    = "AllowArtifactStorageAccess"
     effect = "Allow"
 
     actions = [
@@ -135,12 +136,15 @@ data "aws_iam_policy_document" "codepipeline_policy" {
   }
 
   statement {
-    effect    = "Allow"
+    sid    = "AllowUseCodeConnection"
+    effect = "Allow"
+
     actions   = ["codestar-connections:UseConnection"]
     resources = [var.github_connection_arn]
   }
 
   statement {
+    sid    = "AllowTriggerCodeBuild"
     effect = "Allow"
 
     actions = [
@@ -152,6 +156,7 @@ data "aws_iam_policy_document" "codepipeline_policy" {
   }
 
   statement {
+    sid    = "AllowServiceCatalogProvisioning"
     effect = "Allow"
 
     actions = [
@@ -163,6 +168,16 @@ data "aws_iam_policy_document" "codepipeline_policy" {
     resources = [
       var.product_arn
     ]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "cloudformation:ValidateTemplate"
+    ]
+
+    resources = ["*"]
   }
 }
 
