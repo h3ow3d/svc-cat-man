@@ -68,7 +68,6 @@ module "products" {
   name                                        = each.value.name
   product_owner                               = each.value.owner
   product_type                                = each.value.type
-  product_version                             = each.value.version
   product_source                              = each.value.source
   product_template_storage_bucket_name        = local.product_template_storage_bucket_name
   product_template_storage_bucket_domain_name = aws_s3_bucket.product_template_storage.bucket_domain_name
