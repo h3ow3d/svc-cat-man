@@ -252,7 +252,7 @@ Resources:
             - "CREATE_COMPLETE"
       Targets:
         - Id: "CodePipelineTarget"
-          Arn: !Ref CodePipeline
+          Arn: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${AWS::StackName}" # yamllint disable-line rule:line-length
           RoleArn: !GetAtt EventBridgeTriggerRole.Arn
 
   EventBridgeTriggerRole:
