@@ -171,6 +171,7 @@ Resources:
     Type: AWS::CodePipeline::Pipeline
     Properties:
       Name: !Ref AWS::StackName
+      PipelineType: V2
       RoleArn: !GetAtt CodePipelineRole.Arn
       ArtifactStore:
         Type: S3
@@ -178,28 +179,19 @@ Resources:
       Stages:
         - Name: Source
           Actions:
-            - Name: ArtifactSource
+            - Name: GitHubSource
               ActionTypeId:
                 Category: Source
                 Owner: AWS
-                Provider: S3
-                Version: "1"
+                Provider: CodeStarSourceConnection
+                Version: "2"
               OutputArtifacts:
                 - Name: SourceArtifact
               Configuration:
-                S3Bucket: !Ref ArtifactStorageBucket
-                S3ObjectKey: "artifact.zip"
-            - Name: BuildSpecSource
-              ActionTypeId:
-                Category: Source
-                Owner: AWS
-                Provider: S3
-                Version: "1"
-              OutputArtifacts:
-                - Name: BuildSpecArtifact
-              Configuration:
-                S3Bucket: !Ref BuildSpecStorageBucket
-                S3ObjectKey: "deploy.zip"
+                ConnectionArn: !Ref CodeConnectionArn
+                FullRepositoryId: "Infin8L00p/SvcCatMan"
+                BranchName: "main"
+                OutputArtifactFormat: "CODE_ZIP"
         - Name: Deploy
           Actions:
             - Name: Deploy
@@ -210,10 +202,21 @@ Resources:
                 Version: "1"
               InputArtifacts:
                 - Name: SourceArtifact
-                - Name: BuildSpecArtifact
               Configuration:
                 ProjectName: !Ref DeployCodeBuildProject
-                PrimarySource: BuildSpecArtifact
+      Triggers:
+        - ProviderType: CodeStarSourceConnection
+          GitConfiguration:
+            SourceActionName: GitHubSource
+            Push:
+              - Branches:
+                  Includes:
+                    - main
+                FilePaths:
+                  Includes:
+                    - terraform/**
+                  Excludes:
+                    - terraform/products/**
 
   PipelineNameSSMParameter:
     Type: AWS::SSM::Parameter
@@ -222,6 +225,7 @@ Resources:
       Type: String
       Value: !Ref CodePipeline
       Description: "Stores the name of the CodePipeline."
+
 
 ################################################################################
 ## EventBridge Rule for Triggering CodePipeline on Stack Update
