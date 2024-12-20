@@ -21,6 +21,9 @@ Project Description: Develop a service catalogue management solution
 - [x] Refactor config.yml to terraform variable
 - [ ] Template backend file, to support deployment environments
 - [ ] Address checkov inline ignores
+### EventBridge
+- [ ] Migrate event bridge to separate module & include list of product pipeline
+ids
 
 ## Project Groundwork
 - [ ] Commit lint, automate changelog
