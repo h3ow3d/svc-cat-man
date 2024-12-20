@@ -10,7 +10,7 @@ portfolios = [
         name    = "example-bucket"
         owner   = "platform"
         type    = "CLOUD_FORMATION_TEMPLATE"
-        version = "0.1"
+        version = "0"
         source  = "local"
         launch_policy_arns = [
           "arn:aws:iam::aws:policy/AmazonS3FullAccess",
@@ -21,7 +21,7 @@ portfolios = [
         name    = "example-table"
         owner   = "platform"
         type    = "CLOUD_FORMATION_TEMPLATE"
-        version = "0.1"
+        version = "0"
         source  = "local"
         launch_policy_arns = [
           "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
