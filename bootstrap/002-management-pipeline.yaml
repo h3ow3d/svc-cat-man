@@ -77,7 +77,7 @@ Resources:
         SSEEnabled: true
 
 ################################################################################
-## Service Catalog Pipeline
+## Service Catalog Management Pipeline
 ################################################################################
 
   ArtifactStorageBucket:
@@ -228,6 +228,51 @@ Resources:
       Type: String
       Value: !Ref CodePipeline
       Description: "Stores the name of the CodePipeline."
+
+################################################################################
+## EventBridge Rule for Triggering DeployPipeline on Stack Update
+################################################################################
+
+  TriggerPipelineEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub "${AWS::StackName}-TriggerPipelineOnUpdate"
+      Description: >-
+        Triggers the pipeline when the stack is successfully updated.
+      EventPattern:
+        source:
+          - "aws.cloudformation"
+        detail-type:
+          - "CloudFormation Stack Status Change"
+        detail:
+          stack-id:
+            - !Ref "AWS::StackId"
+          status:
+            - "UPDATE_COMPLETE"
+            - "CREATE_COMPLETE"
+      Targets:
+        - Id: "CodePipelineTarget"
+          Arn: !Ref CodePipeline
+          RoleArn: !GetAtt EventBridgeTriggerRole.Arn
+
+  EventBridgeTriggerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: "TriggerPipelinePolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "codepipeline:StartPipelineExecution"
+                Resource: !Ref CodePipeline
 
 Outputs:
   ArtifactStorageBucketName:
