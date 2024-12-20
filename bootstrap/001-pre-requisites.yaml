@@ -1,3 +1,4 @@
+---
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
   CloudFormation template for a CodeStar connection to GitHub, an IAM Role,
@@ -5,18 +6,19 @@ Description: >-
 
 Parameters:
 
-  CodeStarConnectionName:
+  CodeConnectionName:
     Type: String
     Description: >-
       The name of the CodeStar connection.
       [Recommended]: use the name of the GitHub organisation to avoid confusion.
+    Default: "Infin8L00p"
 
 Resources:
 
-  GitHubCodeStarConnection:
-    Type: AWS::CodeStarConnections::Connection
+  GitHubCodeConnection:
+    Type: AWS::CodeConnections::Connection
     Properties:
-      ConnectionName: !Ref CodeStarConnectionName
+      ConnectionName: !Ref CodeConnectionName
       ProviderType: "GitHub"
 
   CloudFormationAdminRole:
@@ -46,14 +48,10 @@ Resources:
     Properties:
       Name: "codeconnection_arn"
       Type: String
-      Value: !GetAtt GitHubCodeStarConnection.ConnectionArn
-      Description: "The ARN of the CodeStar connection to GitHub."
+      Value: !GetAtt GitHubCodeConnection.ConnectionArn
+      Description: "The ARN of the Code Connection to GitHub."
 
 Outputs:
-
-  CodeStarConnectionId:
-    Description: "The ID of the CodeStar connection to GitHub."
-    Value: !Ref GitHubCodeStarConnection
 
   IAMRoleArn:
     Description: "The ARN of the IAM Role with AdministratorAccess."

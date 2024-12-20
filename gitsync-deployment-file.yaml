@@ -1,11 +1,10 @@
 ---
 template-file-path: bootstrap/002-management-pipeline.yaml
 parameters:
-  # yamllint disable-line rule:line-length
-  GitHubAppConfigurationSecretARN: >-
-    arn:aws:secretsmanager:eu-west-2:575108940418:secret:github_app_config-PBWZPe
-  # yamllint disable-line rule:line-length
-  CodeConnectionARN: >-
-    arn:aws:codestar-connections:eu-west-2:575108940418:connection/db09785f-abd3-4e6a-911d-dc17d20f6ddf
+  ArtifactStorageBucketName: "artifact-storage"
+  BuildSpecStorageBucketName: "buildspec-storage"
+  StateBucketName: "terraform-state"
+  StateLockTableName: "state-lock-table"
+  LowerCaseStackName: "svccatman"
 tags:
   Service: "Service Catalog Manager"

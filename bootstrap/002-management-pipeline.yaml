@@ -26,17 +26,6 @@ Parameters:
     Description: Name of the DynamoDB table for Terraform state locking.
     Default: "state-lock-table"
 
-  GitHubAppConfigurationSecretARN:
-    Type: String
-    Description: >-
-      The ARN of the Private key for authorising GitHub provider in Secrets
-      Manager.
-
-  CodeConnectionARN:
-    Type: String
-    Description: >-
-      ARN of the manually managed Codeconnection.
-
   LowerCaseStackName:
     Type: String
     Default: "svccatman"
@@ -136,13 +125,13 @@ Resources:
                 Action:
                   - secretsmanager:*
                 Resource:
-                  - !Ref GitHubAppConfigurationSecretARN
+                  - !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:github_app_config-*" # yamllint disable-line rule:line-length
               - Effect: Allow
                 Action:
                   - codestar-connections:*
                   - codeconnections:*
                 Resource:
-                  - !Ref CodeConnectionARN
+                  - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/codeconnection_arn" # yamllint disable-line rule:line-length
               - Effect: Allow
                 Action:
                   - logs:*
