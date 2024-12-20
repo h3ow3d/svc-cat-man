@@ -230,7 +230,7 @@ Resources:
       Description: "Stores the name of the CodePipeline."
 
 ################################################################################
-## EventBridge Rule for Triggering DeployPipeline on Stack Update
+## EventBridge Rule for Triggering CodePipeline on Stack Update
 ################################################################################
 
   TriggerPipelineEventRule:
