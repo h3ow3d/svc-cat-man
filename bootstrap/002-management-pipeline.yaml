@@ -262,24 +262,3 @@ Resources:
               - Effect: Allow
                 Action: "codepipeline:StartPipelineExecution"
                 Resource: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${AWS::StackName}" # yamllint disable-line rule:line-length
-
-Outputs:
-  ArtifactStorageBucketName:
-    Description: The name of the S3 bucket for storing artifacts.
-    Value: !Ref ArtifactStorageBucket
-
-  BuildSpecStorageBucketName:
-    Description: The name of the S3 bucket for storing buildspecs.
-    Value: !Ref BuildSpecStorageBucket
-
-  StateBucketName:
-    Description: The name of the S3 bucket for storing Terraform state.
-    Value: !Ref StateStorageBucket
-
-  StateLockTableName:
-    Description: The name of the DynamoDB table for Terraform state locking.
-    Value: !Ref StateLockTable
-
-  CodePipelineName:
-    Description: The name of the CodePipeline.
-    Value: !Ref CodePipeline
