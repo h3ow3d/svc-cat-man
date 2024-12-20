@@ -76,10 +76,13 @@ module "products" {
   launch_policy_arns                          = each.value.launch_policy_arns
 }
 
-module "product_pipelines" {
-  for_each = { for product in local.products : product.name => product }
+module "cloud_formation_product_pipeline" {
+  for_each = {
+    for product in local.products : product.name => product
+    if product.type == "CLOUD_FORMATION_TEMPLATE"
+  }
 
-  source                = "./modules/product_pipeline"
+  source                = "./modules/cloud_formation_product_pipeline"
   name                  = each.value.name
   product_source        = each.value.source
   product_type          = each.value.type
