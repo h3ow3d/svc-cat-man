@@ -27,7 +27,6 @@ phases:
           -compact-warnings \
           -out=tfplan \
           -input=false \
-          -lockfile=readonly \
           -lock-timeout=30s
       - echo "Summarizing Terraform plan..."
       - terraform show -json tfplan | tf-summarize
@@ -35,6 +34,7 @@ phases:
       - terraform apply \
           -compact-warnings \
           -input=false \
+          -lock-timeout=30s \
           -backup=/tmp/svccatman-terraform-state_$(date +%Y-%m-%d).tar.gz \
           tfplan
 
