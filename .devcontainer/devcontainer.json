@@ -1,0 +1,61 @@
+{
+  "build": {
+    "context": ".",
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "hashicorp.terraform",
+        "esbenp.prettier-vscode",
+        "redhat.vscode-yaml",
+        "kddejong.vscode-cfn-lint",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "cfnLint.path": "/opt/homebrew/bin/cfn-lint",
+        "editor.formatOnSave": true,
+        "editor.rulers": [
+          80
+        ],
+        "editor.tabSize": 2,
+        "terraform.languageServer": {
+          "enabled": true
+        },
+        "yaml.customTags": [
+          "!Ref",
+          "!Sub",
+          "!GetAtt",
+          "!If",
+          "!Equals",
+          "!And",
+          "!Or",
+          "!Not",
+          "!FindInMap sequence",
+          "!ImportValue",
+          "!Join sequence",
+          "!Split sequence",
+          "!Select sequence",
+          "!Base64"
+        ]
+      }
+    }
+  },
+  "mounts": [
+    {
+      "source": "${env:HOME}/.aws",
+      "target": "/root/.aws",
+      "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}",
+      "target": "/workspace",
+      "type": "bind"
+    }
+  ],
+  "name": "SvcCatMan Dev Container",
+  "postCreateCommand": "terraform init",
+  "remoteEnv": {
+    "AWS_PROFILE": "default"
+  }
+}
