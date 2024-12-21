@@ -10,9 +10,7 @@ phases:
     commands:
       - wget https://go.dev/dl/go1.19.linux-amd64.tar.gz
       - tar -C /usr/local -xzf go1.19.linux-amd64.tar.gz
-      - export PATH=$PATH:/usr/local/go/bin
-      - echo "Installing tf-summarize..."
-      - go install github.com/dineshba/tf-summarize@latest
+      - /usr/local/go/bin/go install github.com/dineshba/tf-summarize@latest
 
   build:
     commands:
