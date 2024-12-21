@@ -1,0 +1,121 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  Service Catalog Product for S3 Bucket with Static Website Hosting and
+  CodePipeline for Deployment.
+
+Parameters:
+  GitHubRepository:
+    Type: String
+    Description: >-
+      The name of the GitHub repository to source website code from.
+      Format: "owner/repository".
+
+  CodeConnectionArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: The ARN of the CodeConnection stored in SSM Parameter Store
+    Default: "/codeconnection_arn"
+
+  CodeConnectionName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: The name of the CodeConnection stored in SSM Parameter Store
+    Default: "/codeconnection_name"
+
+Resources:
+  StaticWebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::AccountId}-static-website-bucket"
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StaticWebsiteBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: "s3:GetObject"
+            Resource: !GetAtt StaticWebsiteBucket.Arn
+
+  CodePipelineServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodePipelinePermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Resource: !Sub "${StaticWebsiteBucket.Arn}/*"
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !Sub "${StaticWebsiteBucket.Arn}/"
+
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn: !GetAtt CodePipelineServiceRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref StaticWebsiteBucket
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: GitHubSource
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: CodeStarSourceConnection
+                Version: "1"
+              Configuration:
+                ConnectionArn: !Ref CodeConnectionArn
+                FullRepositoryId: !Ref GitHubRepository
+                BranchName: main
+              OutputArtifacts:
+                - Name: SourceOutput
+        - Name: Deploy
+          Actions:
+            - Name: S3Deploy
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                BucketName: !Ref StaticWebsiteBucket
+                Extract: true
+              InputArtifacts:
+                - Name: SourceOutput
+
+  GitHubCodeConnection:
+    Type: AWS::CodeConnections::Connection
+    Properties:
+      ConnectionName: !Ref CodeConnectionName
+      ProviderType: "GitHub"
+
+Outputs:
+  StaticWebsiteURL:
+    Description: URL of the static website
+    Value: !Sub "http://${StaticWebsiteBucket}.s3-website-${AWS::Region}.amazonaws.com" # yamllint disable-line rule:line-length
+
+  CodePipelineName:
+    Description: Name of the CodePipeline
+    Value: !Ref CodePipeline

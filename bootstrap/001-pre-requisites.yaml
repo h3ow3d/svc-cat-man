@@ -36,13 +36,6 @@ Resources:
         - arn:aws:iam::aws:policy/AdministratorAccess
       Path: "/"
 
-  GitHubAppConfigurationSecret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Name: "github_app_config"
-      Description: >-
-        Configuration for authorising GitHub provider.
-
   CodeConnectionArnParameter:
     Type: AWS::SSM::Parameter
     Properties:
@@ -51,14 +44,16 @@ Resources:
       Value: !GetAtt GitHubCodeConnection.ConnectionArn
       Description: "The ARN of the Code Connection to GitHub."
 
+  CodeConnectionNameParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: "codeconnection_name"
+      Type: String
+      Value: !Ref CodeConnectionName
+      Description: "The name of the Code Connection to GitHub."
+
 Outputs:
 
   IAMRoleArn:
     Description: "The ARN of the IAM Role with AdministratorAccess."
     Value: !GetAtt CloudFormationAdminRole.Arn
-
-  GitHubAppConfigurationSecretArn:
-    Description: >-
-      The ARN of the configuration for authorising GitHub provider in Secrets
-      Manager.
-    Value: !Ref GitHubAppConfigurationSecret

@@ -1,0 +1,9 @@
+{
+  "ProductType": "CLOUD_FORMATION_TEMPLATE",
+  "ProductVersionDescription": "Static website hosting.",
+  "ProductVersionName": "0",
+  "Properties": {
+    "TemplateFilePath": "terraform/products/static-website/template.yaml"
+  },
+  "SchemaVersion": "1.0"
+}
