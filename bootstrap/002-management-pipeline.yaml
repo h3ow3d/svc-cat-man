@@ -105,6 +105,11 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
+                  - codeconnections:UseConnection
+                Resource:
+                  - !Ref CodeConnectionArn
+              - Effect: Allow
+                Action:
                   - codebuild:*
                   - s3:*
                   - dynamodb:*
@@ -133,7 +138,6 @@ Resources:
                   - !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:github_app_config-*" # yamllint disable-line rule:line-length
               - Effect: Allow
                 Action:
-                  - codestar-connections:*
                   - codeconnections:*
                 Resource:
                   - !Ref CodeConnectionArn
