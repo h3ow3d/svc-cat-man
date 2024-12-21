@@ -37,11 +37,9 @@ phases:
           -compact-warnings \
           -input=false \
           -lock-timeout=30s \
-          -backup=/tmp/svccatman-terraform-state_$(date +%Y-%m-%d).tar.gz \
           tfplan
 
 artifacts:
   files:
-    - /tmp/svccatman-terraform-state_$(date +%Y-%m-%d).tar.gz
     - '**/*'
   discard-paths: no
