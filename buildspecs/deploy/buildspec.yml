@@ -2,7 +2,8 @@
 version: 0.2
 
 env:
-  TF_IN_AUTOMATION: 1
+  variables:
+    TF_IN_AUTOMATION: 1
 
 phases:
   install:
