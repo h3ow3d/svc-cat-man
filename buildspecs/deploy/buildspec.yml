@@ -8,8 +8,8 @@ env:
 phases:
   install:
     commands:
-      - wget https://go.dev/dl/go1.19.linux-amd64.tar.gz
-      - tar -C /usr/local -xzf go1.19.linux-amd64.tar.gz
+      - wget https://go.dev/dl/go1.23.4.linux-amd64.tar.gz
+      - tar -C /usr/local -xzf go1.23.4.linux-amd64.tar.gz
       - /usr/local/go/bin/go install github.com/dineshba/tf-summarize@latest
 
   build:
