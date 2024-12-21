@@ -1,22 +1,32 @@
 ---
 version: 0.2
 
+env:
+  TF_IN_AUTOMATION: 1
+
 phases:
+  install:
+    runtime-versions:
+      golang: 1.19
+    commands:
+      - echo "Installing tf-summarize..."
+      - go install github.com/dineshba/tf-summarize@latest
+
   build:
     commands:
-      # Change to the secondary artifact directory
       - cd terraform/
       - echo "Initializing Terraform..."
-      - terraform init
+      - terraform init -input=false
       - echo "Validating Terraform..."
       - terraform validate
       - echo "Planning Terraform..."
-      - terraform plan
+      - terraform plan -out=tfplan -input=false > /dev/null
+      - echo "Summarizing Terraform plan..."
+      - terraform show -json tfplan | tf-summarize
       - echo "Applying Terraform..."
-      - terraform apply -auto-approve
+      - terraform apply -input=false tfplan
 
 artifacts:
   files:
-    # yamllint disable-line rule:truthy
     - '**/*'
   discard-paths: no
