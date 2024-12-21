@@ -28,7 +28,7 @@ phases:
           -compact-warnings \
           -out=tfplan \
           -input=false \
-          -lock-timeout=30s
+          -lock-timeout=30s > /dev/null
       - echo "Summarizing Terraform plan..."
       - terraform show -json tfplan | tf-summarize
       - echo "Applying Terraform..."

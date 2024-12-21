@@ -1,4 +1,3 @@
----
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
   CloudFormation template for bootstrapping Service Catalog Manager, including
@@ -211,6 +210,8 @@ Resources:
                 Version: "1"
               InputArtifacts:
                 - Name: SourceArtifact
+              OutputArtifacts:
+                - Name: DeployArtifact
               Configuration:
                 ProjectName: !Ref DeployCodeBuildProject
       Triggers:
