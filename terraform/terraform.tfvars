@@ -44,7 +44,7 @@ portfolios = [
           "arn:aws:iam::aws:policy/AmazonS3FullAccess",
           "arn:aws:iam::aws:policy/AWSCloudFormationFullAccess",
           "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess",
-          "arn:aws:iam::aws:policy/AWSCodeStarServiceRole"
+          "arn:aws:iam::aws:policy/AWSCodeStarFullAccess"
         ]
       }
     ]
