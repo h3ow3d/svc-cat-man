@@ -5,7 +5,7 @@ phases:
   build:
     commands:
       # Change to the secondary artifact directory
-      - cd $CODEBUILD_SRC_DIR_SourceArtifact
+      - cd terraform/
       - echo "Initializing Terraform..."
       - terraform init
       - echo "Validating Terraform..."
