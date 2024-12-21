@@ -10,7 +10,8 @@ RUN apk add --no-cache \
     py3-pip \
     pipx \
     cargo \
-    rust
+    rust \
+    aws-cli
 
 # Ensure pipx's binary directory is in PATH
 ENV PATH="/root/.local/bin:$PATH"

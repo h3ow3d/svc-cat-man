@@ -1,3 +1,4 @@
+---
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
   CloudFormation template for bootstrapping Service Catalog Manager, including
@@ -31,8 +32,21 @@ Parameters:
 
   CodeConnectionArn:
     Type: AWS::SSM::Parameter::Value<String>
-    Description: The ARN of the CodeConnection stored in SSM Parameter Store
+    Description: >-
+      The ARN of the CodeConnection stored in SSM Parameter Store.
     Default: "/codeconnection_arn"
+
+  GitHubOrganisationName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: >-
+      The name of the GitHub organisation stored in SSM Parameter Store.
+    Default: "/github_organisation"
+
+  GitHubRepositoryName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: >-
+      The name of the GitHub repository stored in SSM Parameter Store.
+    Default: "/github_repository"
 
 Resources:
 
@@ -197,7 +211,7 @@ Resources:
                 - Name: SourceArtifact
               Configuration:
                 ConnectionArn: !Ref CodeConnectionArn
-                FullRepositoryId: "Infin8L00p/SvcCatMan"
+                FullRepositoryId: !Sub "${GitHubOrganisationName}/${GitHubRepositoryName}" # yamllint disable-line rule:line-length
                 BranchName: "main"
                 OutputArtifactFormat: "CODE_ZIP"
         - Name: Deploy

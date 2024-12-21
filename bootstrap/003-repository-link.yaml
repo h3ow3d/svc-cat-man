@@ -1,24 +1,27 @@
 ---
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
-  CloudFormation template for creating a CodeStar Connections RepositoryLink to
+  CloudFormation template for creating a Code Connections RepositoryLink to
   a GitHub repository.
 
 Parameters:
 
-  OrganisationName:
-    Type: String
-    Description: "The name of the GitHub organisation."
-    Default: "Infin8L00p"
+  GitHubOrganisationName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: >-
+      The name of the GitHub organisation stored in SSM Parameter Store.
+    Default: "/github_organisation"
 
-  RepositoryName:
-    Type: String
-    Description: "The name of the GitHub repository."
-    Default: "SvcCatMan"
+  GitHubRepositoryName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: >-
+      The name of the GitHub repository stored in SSM Parameter Store.
+    Default: "/github_repository"
 
   CodeConnectionArn:
     Type: AWS::SSM::Parameter::Value<String>
-    Description: The ARN of the CodeConnection stored in SSM Parameter Store
+    Description: >-
+      The ARN of the CodeConnection stored in SSM Parameter Store.
     Default: "/codeconnection_arn"
 
 Resources:
@@ -26,8 +29,8 @@ Resources:
   CodeStarRepositoryLink:
     Type: AWS::CodeStarConnections::RepositoryLink
     Properties:
-      OwnerId: !Ref OrganisationName
-      RepositoryName: !Ref RepositoryName
+      OwnerId: !Ref GitHubOrganisationName
+      RepositoryName: !Ref GitHubRepositoryName
       ConnectionArn: !Ref CodeConnectionArn
 
 Outputs:

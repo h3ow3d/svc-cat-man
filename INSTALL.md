@@ -12,9 +12,7 @@ bootstrap pipeline's cloudformation stack.
   aws cloudformation deploy \
   --template-file bootstrap/001-pre-requisites.yaml \
   --stack-name "SvcCatMan-pre-requisites" \
-  --capabilities CAPABILITY_NAMED_IAM \
-  --parameter-overrides \
-    CodeStarConnectionName=<GitHubOrganisationName>
+  --capabilities CAPABILITY_NAMED_IAM
 ```
 
 [Approve pending connection.](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
@@ -25,10 +23,7 @@ bootstrap pipeline's cloudformation stack.
   aws cloudformation deploy \
   --template-file bootstrap/002-management-pipeline.yaml \
   --stack-name "SvcCatMan-management-pipeline" \
-  --capabilities CAPABILITY_NAMED_IAM \
-  --parameter-overrides \
-    GitHubAppConfigurationSecretArn="<GITHUB_TOKEN_SECRET_ARN>" \
-    CodeConnectionARN="<CODECONNECTION_ARN>"
+  --capabilities CAPABILITY_NAMED_IAM
 ```
 
 ## Deploy Repository Link
@@ -36,9 +31,5 @@ bootstrap pipeline's cloudformation stack.
 ```bash
   aws cloudformation deploy \
   --template-file bootstrap/003-repository-link.yaml \
-  --stack-name "SvcCatMan-repository-link" \
-  --parameter-overrides \
-    OrganisationName="<GITHUB_ORGANISATION_NAME>"
-    RepositoryName="<GITHUB_REPOSITORY_NAME>" \
-    CodeStarConnectionArn="<CODECONNECTION_ARN>"
+  --stack-name "SvcCatMan-repository-link"
 ```

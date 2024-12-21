@@ -1,17 +1,27 @@
 ---
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
-  CloudFormation template for a CodeStar connection to GitHub, an IAM Role,
-  and an SSM Parameter containing the CodeStar Connection ARN.
+  CloudFormation template for a Code Connection to GitHub, an IAM Role,
+  and an SSM Parameter containing the Code Connection ARN.
 
 Parameters:
 
   CodeConnectionName:
     Type: String
     Description: >-
-      The name of the CodeStar connection.
+      The name of the Code Connection.
       [Recommended]: use the name of the GitHub organisation to avoid confusion.
     Default: "Infin8L00p"
+
+  GitHubOrganisationName:
+    Type: String
+    Description: "The name of the GitHub organisation."
+    Default: "Infin8L00p"
+
+  GitHubRepositoryName:
+    Type: String
+    Description: "The name of the GitHub repository."
+    Default: "SvcCatMan"
 
 Resources:
 
@@ -51,6 +61,22 @@ Resources:
       Type: String
       Value: !Ref CodeConnectionName
       Description: "The name of the Code Connection to GitHub."
+
+  GitHubOrganisation:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: "github_organisation"
+      Type: String
+      Value: !Ref GitHubOrganisationName
+      Description: "The name of the GitHub organisation."
+
+  GitHubRepository:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: "github_repository"
+      Type: String
+      Value: !Ref GitHubRepositoryName
+      Description: "The name of the GitHub repository."
 
 Outputs:
 
