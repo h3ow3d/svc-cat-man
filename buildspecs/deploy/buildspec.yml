@@ -23,7 +23,8 @@ phases:
       - echo "Validating Terraform..."
       - terraform validate
       - echo "Planning Terraform..."
-      - terraform plan \
+      - |
+        terraform plan \
           -compact-warnings \
           -out=tfplan \
           -input=false \
@@ -31,7 +32,8 @@ phases:
       - echo "Summarizing Terraform plan..."
       - terraform show -json tfplan | tf-summarize
       - echo "Applying Terraform..."
-      - terraform apply \
+      - |
+        terraform apply \
           -compact-warnings \
           -input=false \
           -lock-timeout=30s \
