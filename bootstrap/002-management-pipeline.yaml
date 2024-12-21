@@ -170,12 +170,14 @@ Resources:
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
-      Name: !Ref AWS::StackName
-      PipelineType: V2
-      RoleArn: !GetAtt CodePipelineRole.Arn
       ArtifactStore:
         Type: S3
         Location: !Ref ArtifactStorageBucket
+      ExecutionMode: QUEUED
+      Name: !Ref AWS::StackName
+      PipelineType: V2
+      RestartExecutionOnUpdate: true
+      RoleArn: !GetAtt CodePipelineRole.Arn
       Stages:
         - Name: Source
           Actions:
@@ -184,7 +186,7 @@ Resources:
                 Category: Source
                 Owner: AWS
                 Provider: CodeStarSourceConnection
-                Version: "2"
+                Version: "1"
               OutputArtifacts:
                 - Name: SourceArtifact
               Configuration:
@@ -215,6 +217,7 @@ Resources:
                 FilePaths:
                   Includes:
                     - terraform/**
+                    - buildspecs/**
                   Excludes:
                     - terraform/products/**
 
