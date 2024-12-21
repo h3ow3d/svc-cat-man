@@ -19,7 +19,7 @@ phases:
     commands:
       - cd terraform/
       - echo "Initializing Terraform..."
-      - terraform init -input=false
+      - terraform init -input=false > /dev/null
       - echo "Validating Terraform..."
       - terraform validate
       - echo "Planning Terraform..."
