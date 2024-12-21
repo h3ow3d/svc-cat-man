@@ -165,6 +165,7 @@ Resources:
       Name: Deploy
       Source:
         Type: CODEPIPELINE
+        BuildSpec: buildspecs/deploy/buildspec.yml
       Artifacts:
         Type: CODEPIPELINE
       Environment:
