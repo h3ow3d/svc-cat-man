@@ -19,17 +19,27 @@ phases:
     commands:
       - cd terraform/
       - echo "Initializing Terraform..."
-      - terraform init -input=false > /dev/null
+      - terraform init -input=false -lock=false > /dev/null
       - echo "Validating Terraform..."
       - terraform validate
       - echo "Planning Terraform..."
-      - terraform plan -out=tfplan -input=false > /dev/null
+      - terraform plan \
+          -compact-warnings \
+          -out=tfplan \
+          -input=false \
+          -lockfile=readonly \
+          -lock-timeout=30s
       - echo "Summarizing Terraform plan..."
       - terraform show -json tfplan | tf-summarize
       - echo "Applying Terraform..."
-      - terraform apply -input=false tfplan
+      - terraform apply \
+          -compact-warnings \
+          -input=false \
+          -backup=/tmp/svccatman-terraform-state_$(date +%Y-%m-%d).tar.gz \
+          tfplan
 
 artifacts:
   files:
+    - /tmp/svccatman-terraform-state_$(date +%Y-%m-%d).tar.gz
     - '**/*'
   discard-paths: no
