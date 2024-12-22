@@ -1,31 +1,3 @@
-locals {
-  # Use the Terraform variable directly instead of reading from a file
-  portfolios = var.portfolios
-
-  products = flatten([
-    for portfolio in local.portfolios : [
-      for product in portfolio.products : {
-        portfolio_name     = portfolio.name
-        portfolio_id       = module.portfolios[portfolio.name].portfolio_id
-        name               = product.name
-        description        = portfolio.description
-        owner              = product.owner
-        type               = product.type
-        source             = product.source
-        launch_policy_arns = product.launch_policy_arns
-      }
-    ]
-  ])
-
-  product_template_storage_bucket_name = lower("product-template-storage-${random_string.suffix.result}")
-}
-
-data "aws_caller_identity" "current" {}
-
-data "aws_ssm_parameter" "codeconnection_arn" {
-  name = "codeconnection_arn"
-}
-
 resource "random_string" "suffix" {
   length  = 6
   special = false
@@ -86,4 +58,6 @@ module "cloud_formation_product_pipeline" {
   product_id            = module.products[each.key].product_id
   product_arn           = module.products[each.key].product_arn
   github_connection_arn = data.aws_ssm_parameter.codeconnection_arn.value
+  github_repository     = data.aws_ssm_parameter.github_repository.value
+  github_organisation   = data.aws_ssm_parameter.github_organisation.value
 }

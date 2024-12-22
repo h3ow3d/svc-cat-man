@@ -1,5 +1,5 @@
 locals {
-  product_repository_name = var.product_source == "local" ? "Infin8L00p/SvcCatMan" : null
+  product_repository_name = var.product_source == "local" ? "${var.github_organisation}/${var.github_repository}" : null
 }
 
 data "aws_kms_alias" "s3kmskey" {
