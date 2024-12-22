@@ -33,6 +33,58 @@ Resources:
       RepositoryName: !Ref GitHubRepositoryName
       ConnectionArn: !Ref CodeConnectionArn
 
+  GitSyncRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: "SvcCatMan-gitsync-role"
+      Path: "/service-role/"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: CfnGitSyncTrustPolicy
+            Effect: Allow
+            Principal:
+              Service: cloudformation.sync.codeconnections.amazonaws.com
+            Action: sts:AssumeRole
+      Description: "CloudFormation Git sync role"
+      MaxSessionDuration: 3600
+      Policies:
+        - PolicyName: SyncPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: SyncToCloudFormation
+                Effect: Allow
+                Action:
+                  - "cloudformation:CreateChangeSet"
+                  - "cloudformation:DeleteChangeSet"
+                  - "cloudformation:DescribeChangeSet"
+                  - "cloudformation:DescribeStackEvents"
+                  - "cloudformation:DescribeStacks"
+                  - "cloudformation:ExecuteChangeSet"
+                  - "cloudformation:GetTemplate"
+                  - "cloudformation:ListChangeSets"
+                  - "cloudformation:ListStacks"
+                  - "cloudformation:ValidateTemplate"
+                Resource:
+                  # [TODO: replace with SSM param output of stack ARN]
+                  - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/SvcCatMan-management-pipeline" # yamllint disable-line rule:line-length
+                  - !Sub "arn:aws:cloudformation:e${AWS::Region}:${AWS::AccountId}:stack/SvcCatMan-management-pipeline/*" # yamllint disable-line rule:line-length
+              - Sid: PolicyForManagedRules
+                Effect: Allow
+                Action:
+                  - "events:PutRule"
+                  - "events:PutTargets"
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    events:ManagedBy:
+                      - "cloudformation.sync.codeconnections.amazonaws.com"
+              - Sid: PolicyForDescribingRule
+                Effect: Allow
+                Action: "events:DescribeRule"
+                Resource: "*"
+
 Outputs:
 
   RepositoryLinkId:

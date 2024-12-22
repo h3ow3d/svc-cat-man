@@ -48,6 +48,12 @@ Parameters:
       The name of the GitHub repository stored in SSM Parameter Store.
     Default: "/github_repository"
 
+  # ProjectName:
+  #   Type: AWS::SSM::Parameter::Value<String>
+  #   Description: >-
+  #     The name of the stack to be used as project configuration.
+  #   Default: "/project_name"
+
 Resources:
 
 ################################################################################

@@ -11,7 +11,8 @@ RUN apk add --no-cache \
     pipx \
     cargo \
     rust \
-    aws-cli
+    aws-cli \
+    xdg-utils
 
 # Ensure pipx's binary directory is in PATH
 ENV PATH="/root/.local/bin:$PATH"

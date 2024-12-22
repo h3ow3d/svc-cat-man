@@ -6,6 +6,11 @@ Description: >-
 
 Parameters:
 
+  ProjectName:
+    Type: String
+    Description: "The name of the stack to be used as project configuration."
+    Default: "SvcCatMan"
+
   CodeConnectionName:
     Type: String
     Description: >-
@@ -30,21 +35,6 @@ Resources:
     Properties:
       ConnectionName: !Ref CodeConnectionName
       ProviderType: "GitHub"
-
-  CloudFormationAdminRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: "CloudFormationAdminRole"
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: cloudformation.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AdministratorAccess
-      Path: "/"
 
   CodeConnectionArnParameter:
     Type: AWS::SSM::Parameter
@@ -78,8 +68,16 @@ Resources:
       Value: !Ref GitHubRepositoryName
       Description: "The name of the GitHub repository."
 
+  ProjectStackName:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: "project_name"
+      Type: String
+      Value: !Ref ProjectName
+      Description: "The name of the stack to be used as project configuration."
+
 Outputs:
 
-  IAMRoleArn:
-    Description: "The ARN of the IAM Role with AdministratorAccess."
-    Value: !GetAtt CloudFormationAdminRole.Arn
+  GitHubCodeConnection:
+    Description: "The ARN of the CodeConnection to GitHub."
+    Value: !GetAtt GitHubCodeConnection.ConnectionArn
