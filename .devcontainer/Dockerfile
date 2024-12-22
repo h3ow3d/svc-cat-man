@@ -29,7 +29,10 @@ ENV PATH="/go/bin:$PATH"
 # Install tf-summarize
 RUN /usr/local/go/bin/go install github.com/dineshba/tf-summarize@latest
 
-# Download & install tflint
+# Install pre-commit & cfn-lint using pipx
+RUN pipx install pre-commit cfn-lint
+
+# Install tflint
 RUN curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh \
     | bash
 
