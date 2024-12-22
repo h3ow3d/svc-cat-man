@@ -1,5 +1,4 @@
 {
-  "cfnLint.path": "/opt/homebrew/bin/cfn-lint",
   "editor.formatOnSave": true,
   "editor.rulers": [
     80

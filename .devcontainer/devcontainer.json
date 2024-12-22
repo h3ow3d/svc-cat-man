@@ -13,7 +13,7 @@
         "ms-azuretools.vscode-docker"
       ],
       "settings": {
-        "cfnLint.path": "/opt/homebrew/bin/cfn-lint",
+        "cfnLint.path": "/root/.local/bin/cfn-lint",
         "editor.formatOnSave": true,
         "editor.rulers": [
           80

@@ -30,8 +30,8 @@ ENV PATH="/go/bin:$PATH"
 # Install tf-summarize
 RUN /usr/local/go/bin/go install github.com/dineshba/tf-summarize@latest
 
-# Install pre-commit using pipx
-RUN pipx install pre-commit
+# Install pre-commit & cfn-lint using pipx
+RUN pipx install pre-commit cfn-lint
 
 # Verify installations
 RUN terraform --version && go version && /go/bin/tf-summarize --help
