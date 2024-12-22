@@ -11,23 +11,34 @@
 
 ## Changes
 
-- **Bootstrap**:
+### GitHub
+  - [ ] New or updated workflows.
+  - [ ] Pull request template updates.
+
+### **Bootstrap**
   - [ ] Pre-requisites.
   - [ ] Management pipeline.
   - [ ] Repository link.
-  - [ ] Will this change require re-activating codeconnection or updating
-    the GitSync connection?
+  - [ ] Changes affecting codeconnection status.
+  - [ ] Changes require redeployment of GitSync connection.
+  - [ ] Changes to SSM parameters.
 
-- **Service Catalog Manager**:
-  - [ ] Changes in the main Terraform deployment.
-  - [ ] Changes to BuildSpecs.
-  - **Modules**
-    - [ ] **Portfolio**: Changes in the portfolio module.
-    - **Products**:
-      - [ ] New Service Catalog Product added.
-      - [ ] Changes to Product Terraform modules.
-        - [ ] Product pipeline.
-      - [ ] Ammending existing Product templates.
+### **Products**:
+ - [ ] New Service Catalog Product added.
+ - [ ] Changes to existing Product templates.
+ - [ ] Product configuration update.
+
+### **Modules**:
+#### **Service Catalog Manager**:
+  - [ ] Changes to Buildspec template for deploying.
+  - [ ] Changes to portfolios variable structure.
+#### **Portfolio**:
+  - [ ] Changes to outputs.
+#### **Product**:
+  - [ ] Changes affect template source.
+
+### **Cloud Formation Product Pipeline**:
+  - [ ] New pipeline stages & actions added.
 
 ---
 
