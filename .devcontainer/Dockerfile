@@ -2,7 +2,7 @@ FROM hashicorp/terraform:1.10
 
 # Install wget and necessary packages
 RUN apk add --no-cache \
-    wget \
+    curl \
     tar \
     bash \
     git \
@@ -30,13 +30,19 @@ ENV PATH="/go/bin:$PATH"
 RUN /usr/local/go/bin/go install github.com/dineshba/tf-summarize@latest
 
 # Install pre-commit & cfn-lint using pipx
-RUN pipx install pre-commit cfn-lint tflint
+RUN pipx install pre-commit cfn-lint
 
+# Download & install tflint
 RUN curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh \
     | bash
 
 # Verify installations
-RUN terraform --version && go version && /go/bin/tf-summarize --help
+RUN terraform --version \
+    && go version \
+    && /go/bin/tf-summarize --help \
+    && cfn-lint --version \
+    && pre-commit --version \
+    && tflint --version
 
 # Set up pre-commit hooks (initialize a temporary Git repository)
 WORKDIR /workspace
